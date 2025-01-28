@@ -1,6 +1,8 @@
 const { getDB } = require('../config/db');
 
-// Access the users collection
+// Users Collection Accessor
 const usersCollection = () => getDB().collection('users');
 
-module.exports = usersCollection;
+module.exports = {
+    usersCollection
+};
