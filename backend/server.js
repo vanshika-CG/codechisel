@@ -1,0 +1,30 @@
+const express = require('express');
+const session = require('express-session');
+const cors = require('cors');
+const { connectDB } = require('./config/db'); // MongoDB connection
+require('dotenv').config(); // Load .env variables
+
+const app = express();
+const port = process.env.PORT || 4000;
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 3600000 } // 1-hour session expiry
+}));
+
+// Routes
+app.use('/login', require('./routes/login')); // Authentication routes
+app.use('/protected', require('./routes/protected')); // Protected routes
+app.use('/courses', require('./routes/courses'));
+
+// Connect to MongoDB and start the server
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
+});
