@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { ObjectId } = require('mongodb'); // Import ObjectId for validation
 const courses = require('../models/coursesmodel');
 
 // POST: Add a new course
@@ -34,8 +35,13 @@ router.put('/update/:id', async (req, res) => {
         const courseId = req.params.id;
         const { title, description, author, duration } = req.body;
 
+        // Validate if the ID is a valid ObjectId
+        if (!ObjectId.isValid(courseId)) {
+            return res.status(400).send("Invalid course ID.");
+        }
+
         const result = await courses().updateOne(
-            { _id: new require('mongodb').ObjectId(courseId) },
+            { _id: new ObjectId(courseId) },
             { $set: { title, description, author, duration } }
         );
 
@@ -54,7 +60,12 @@ router.delete('/delete/:id', async (req, res) => {
     try {
         const courseId = req.params.id;
 
-        const result = await courses().deleteOne({ _id: new require('mongodb').ObjectId(courseId) });
+        // Validate if the ID is a valid ObjectId
+        if (!ObjectId.isValid(courseId)) {
+            return res.status(400).send("Invalid course ID.");
+        }
+
+        const result = await courses().deleteOne({ _id: new ObjectId(courseId) });
 
         if (result.deletedCount === 0) {
             return res.status(404).send("Course not found.");
