@@ -1,10 +1,10 @@
 const { MongoClient } = require('mongodb');
 
 // MongoDB connection details
-const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017";
+const uri = process.env.MONGODB_URI || "mongodb+srv://test:12345@cluster0.rqg22.mongodb.net/login?retryWrites=true&w=majority";
 const dbName = "login";
 
-let db;;
+let db;
 
 // Function to connect to MongoDB
 const connectDB = async () => {
