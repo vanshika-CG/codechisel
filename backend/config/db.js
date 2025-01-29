@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 // MongoDB connection details
 const uri = process.env.MONGODB_URI || "mongodb+srv://test:12345@cluster0.rqg22.mongodb.net/login?retryWrites=true&w=majority";

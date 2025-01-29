@@ -22,6 +22,8 @@ app.use('/login', require('./routes/login')); // Authentication routes
 app.use('/protected', require('./routes/protected')); // Protected routes
 app.use('/courses', require('./routes/courses'));
 app.use('/content', require('./routes/content')); // Content management routes
+app.use('/quizzes', require('./routes/quizRoutes'));
+app.use('/submissions', require('./routes/submissionRoutes'));
 
 // Connect to MongoDB and start the server
 connectDB().then(() => {
