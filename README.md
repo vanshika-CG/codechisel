@@ -5,13 +5,17 @@
 ![Screenshot 2025-01-29 154703](https://github.com/user-attachments/assets/7ca27e30-6918-4760-98b9-d9f657a4952e)
 
 
-
 ## 🚀 Overview
 **CodeChisel** is a modern coding education platform designed to bridge the gap between theoretical knowledge and practical coding skills. It offers both **free and paid** structured courses, personalized progress tracking, and interactive quizzes to make learning **engaging, accessible, and effective** for learners of all levels.
 
 ## 🎯 Problem Statement
 Many aspiring programmers struggle with fragmented, unstructured, or uninspiring learning resources. **CodeChisel** solves this by providing a **cohesive, structured, and interactive** learning experience with hands-on coding exercises, quizzes, and personalized dashboards.
 
+## 📌 Live Demo & API Docs
+- 🔗 **Postman API Documentation**: [View here!](https://documenter.getpostman.com/view/39217082/2sAYQiBnrB)
+- 🔗 **Figma UI Design**: [View Design!](https://www.figma.com/design/n6ceBxm4zvLUyypYJBStCm/Untitled?node-id=0-1&t=iWYwSFQj2V0atQPb-1)
+- 🔗 **Project Details**: [View here!](https://1drv.ms/w/c/6e38cecfcf504d58/EYKQ57maRA5JkQOpW-O7PGQBIyRwPFUZ2jl40Miu4ryZFQ?e=42eS2b)
+  
 ## 🌟 Features
 - ✅ **Secure Authentication**: Login, registration, and password recovery.
 - 📚 **Structured Courses**: Covers various programming languages and topics.
@@ -47,10 +51,6 @@ Many aspiring programmers struggle with fragmented, unstructured, or uninspiring
   cd frontend
   npm start
    ```
-## 📌 Live Demo & API Docs
-- 🔗 **Postman API Documentation**: [View here!](https://documenter.getpostman.com/view/39217082/2sAYQiBnrB)
-- 🔗 **Figma UI Design**: [View Design!](https://www.figma.com/design/n6ceBxm4zvLUyypYJBStCm/Untitled?node-id=0-1&t=iWYwSFQj2V0atQPb-1)
-- 🔗 **Project Details**: [View here!](https://1drv.ms/w/c/6e38cecfcf504d58/EYKQ57maRA5JkQOpW-O7PGQBIyRwPFUZ2jl40Miu4ryZFQ?e=42eS2b)
 
 ## 🚀 Future Enhancements
 - 🏆 **Gamification**: Badges, achievements, and rewards.
