@@ -1,7 +1,9 @@
 # CodeChisel - Learn to Code Effectively
 
 ![CodeChisel Logo]
-![Screenshot 2025-01-29 154703](https://github.com/user-attachments/assets/8ec44bc6-ebf5-459b-9997-d6816dd2b23a)
+
+![Screenshot 2025-01-29 154703](https://github.com/user-attachments/assets/7ca27e30-6918-4760-98b9-d9f657a4952e)
+
 
 
 ## 🚀 Overview
