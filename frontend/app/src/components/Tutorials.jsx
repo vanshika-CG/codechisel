@@ -27,8 +27,9 @@ const TutorialCard = ({ title, logo, description, color }) => (
 const App = () => {
   const tutorials = [
     {
-      title: 'PYTHON TUTORIAL',
+  
       logo: tuto1, 
+      title: 'PYTHON TUTORIAL',
       description: 'Introduction to python',
       color: '#1e293b'
     },
@@ -128,14 +129,8 @@ const App = () => {
           </ul>
         </div>
         <div className="footer-section">
-          <h4>Contact</h4>
-          <p>support@example.com</p>
-          <p>+1 234 567 890</p>
-          <div className="social-links">
-            <a href="#" className="social-link">Twitter</a>
-            <a href="#" className="social-link">GitHub</a>
-            <a href="#" className="social-link">LinkedIn</a>
-          </div>
+         <p className='feedback'>Learn to code with interactive tutorials and real-time feedback.</p>
+         <h2>Learning Paths</h2>
         </div>
       </footer>
     </div>
