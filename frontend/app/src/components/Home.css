@@ -1,0 +1,307 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  min-height: 100vh;
+  background: rgb(16,4,37);
+  background: linear-gradient(142deg, rgba(16,4,37,1) 0%, rgba(66,46,111,1) 100%);
+}
+
+.veri-text {
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: large;
+  margin-left: 15px;
+}
+
+.veri-icon {
+  height: 40px;
+  width: 40px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.all-veri {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.3);
+  height: 70px;
+  width: 400px;
+  margin-top: 9%;
+  margin-left: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.learn {
+  color: white;
+  margin-left: 90px;
+  font-size: 50px;
+  margin-top: 30px;
+}
+
+.learn1 {
+  color: white;
+  margin-left: 50px;
+  font-size: 50px;
+  margin-top: 7px;
+}
+
+.main {
+  display: flex;
+}
+
+.master {
+  height: 490px;
+  margin-top: 24px;
+  margin-left: 140px;
+}
+
+.description {
+  color: white;
+  font-size: large;
+  margin-top: 25px;
+  width: 450px;
+  margin-left: 30px;
+}
+
+.start {
+  background-color: #EAE34A;
+  border: none;
+  width: 150px;
+  height: 50px;
+  border-radius: 20px;
+  font-size: larger;
+  margin-left: 50px;
+  margin-top: 35px;
+  box-shadow: 0 3px 15px #FFC803;
+}
+
+.start1 {
+  background-color: rgba(255, 255, 255, 0.4);
+  border: none;
+  width: 190px;
+  height: 50px;
+  border-radius: 20px;
+  font-size: larger;
+  margin-left: 50px;
+  margin-top: 40px;
+  color: #EAE34A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.video {
+  height: 35px;
+  width: 35px;
+}
+
+.get {
+  display: flex;
+}
+
+
+.rect-container {
+    position: relative; /* Make the container a positioning context */
+    margin-left: 312px;
+  }
+  
+  .rect {
+    height: 230px;
+  }
+  
+  .white-div {
+    position: absolute; /* Position the divs absolutely within the container */
+    background-color: white;
+    width: 209px; /* Adjust the size as needed */
+    height: 118px; /* Adjust the size as needed */
+    border-radius: 15px; /* Optional: Add rounded corners */
+  }
+  
+  .white-div-1 {
+    top: 86px; /* Adjust positioning */
+    left: 194px; /* Adjust positioning */
+  }
+  
+  .white-div-2 {
+    top: 86px; /* Adjust positioning */
+    left: 449px; /* Adjust positioning */
+    background-color: #E8F99B;
+  }
+  
+  .white-div-3 {
+    top: 86px; /* Adjust positioning */
+    left: 704px; /* Adjust positioning */
+    background-color: #F99ADE;
+  }
+
+  .stud{
+    color: #000000;
+    font-size: larger;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+.para{
+    color: gray;
+    margin-top: 10px;
+    width: 180px;
+    margin-left: 10px;
+}
+
+.num{
+    margin-left: 100px;
+}
+.num1{
+    color: #3B00FF;
+    margin-left: 8px;
+    font-size: 30px;
+}
+.train{
+    margin-top: 48px;
+}
+.star{
+    margin-top: 16px;
+}
+.stars-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .mentor-count {
+    margin: 0; 
+    font-size: 24px
+  }
+  .rate{
+    margin-left: 10px;
+    margin-top: 4px;
+  }
+
+  .quiz{
+    background-color: #1B0C4D;
+    height: 324px;
+    width: 706px;
+    margin-top: 40px;
+    margin-left: 71px;
+    border-radius: 30px;
+  }
+
+  .battle {
+    display: flex;
+    color: white;
+  }
+
+  .code{
+    height: 322px;
+    margin-top: 20px;
+    margin-left:13px;
+  }
+
+  .adv{
+    font-size: 40px;
+    text-align: center;
+    margin-top: 30px;
+  }
+  .level{
+    width: 493px;
+    margin-left: 55px;
+    margin-top: 41px;
+    font-size: larger;
+  }
+  .btn{
+    display: flex;
+  }
+  .quest{
+    border: none;
+    background-color: white;
+    text-align: center;
+    font-weight: 700;
+    height: 60px;
+    width: 160px;
+    border-radius: 10px;
+    margin-top: 50px;
+    font-size: larger;
+    margin-left: 133px;
+  }
+  .quest1{
+    border: none;
+    background-color: #4F46E5;
+    text-align: center;
+    font-weight: 700;
+    height: 60px;
+    width: 160px;
+    border-radius: 10px;
+    margin-top: 50px;
+    color: whitesmoke;
+    font-size: larger;
+    margin-left: 38px;
+  }
+  .path{
+    color: white;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 45px;
+  }
+  .learning{
+    background-color: #9D9D9D;
+    height: 235px;
+    width: 400px;
+    margin-left: 20px;
+    border-radius: 20px;
+    margin-top: 20px;
+  }
+  .flex{
+    display: flex;
+  }
+
+  .icon{
+    margin-top: 30px;
+    margin-left: 30px;
+    height: 50px;
+  }
+  .web{
+   font-weight: 600;
+   font-size: 20px;
+   margin-left: 20px;
+   margin-top: 20px;
+  }
+  .web-d{
+   font-size: large;
+   margin-left: 20px;
+   margin-top: 15px;
+   width: 350px;
+  }
+  .lessons{
+    margin-top: 28px;
+    margin-left: 20px;
+  }
+  .frnd{
+    margin-top: 28px;
+    margin-left: 130px;
+  }
+  .frnd1{
+    margin-top: 28px;
+    margin-left: 170px;
+  }
+  .frnd2{
+    margin-top: 28px;
+    margin-left: 190px;
+  }
+
+  .act{
+    color: white;
+    font-weight: bold;
+    font-size: 28px;
+    margin-left: 20px;
+    margin-top: 30px;
+    text-align: center;
+  }
