@@ -6,17 +6,18 @@ const router = express.Router();
 // POST: Register a new user
 router.post('/register', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, email, password } = req.body;
 
-        // Check if the username already exists
-        const existingUser = await usersCollection().findOne({ username }); // Use usersCollection
+        // Check if the username or email already exists
+        const existingUser = await usersCollection().findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
-            return res.status(400).send("Username already exists");
+            return res.status(400).send("Username or Email already exists");
         }
 
         // Hash password and save user
         const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await usersCollection().insertOne({ username, password: hashedPassword }); // Use usersCollection
+        const result = await usersCollection().insertOne({ username, email, password: hashedPassword });
+
         res.status(201).send(`User registered with ID: ${result.insertedId}`);
     } catch (err) {
         res.status(500).send("Error registering user: " + err.message);
@@ -26,18 +27,21 @@ router.post('/register', async (req, res) => {
 // POST: Login a user
 router.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { usernameOrEmail, password } = req.body;
 
-        // Find the user
-        const user = await usersCollection().findOne({ username }); // Use usersCollection
+        // Find the user by username or email
+        const user = await usersCollection().findOne({
+            $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+        });
+
         if (!user) {
-            return res.status(400).send("Invalid username or password");
+            return res.status(400).send("Invalid username/email or password");
         }
 
         // Compare the password with the hashed password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).send("Invalid username or password");
+            return res.status(400).send("Invalid username/email or password");
         }
 
         // Store user session
