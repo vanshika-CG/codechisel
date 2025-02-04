@@ -1,0 +1,102 @@
+/* LandingPage.css */
+.landing-container {
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  .main-content {
+    padding: 2rem;
+    text-align: center;
+    background-color: #1a1a2e;
+    color: white;
+  }
+  
+  .main-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+  
+  .company-logos {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 0 auto;
+    max-width: 1000px;
+  }
+  
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .company-logo {
+    max-width: 150px;
+    height: auto;
+    object-fit: contain;
+  }
+  
+  .more-text {
+    color: black;
+    margin-top: 1rem;
+  }
+  
+  .footer {
+    background-color: #838080;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .footer-section h3 {
+    color: black;
+    margin-bottom: 1rem;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-section li {
+    margin-bottom: 0.5rem;
+    color: black;
+  }
+  .footer-section p {
+
+    color: black;
+  }
+  
+  .social-links {
+    margin-top: 1rem;
+  }
+  
+  .social-links a {
+    margin-right: 1rem;
+    color: black;
+    text-decoration: none;
+  }
+  
+  .footer-bottom {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+    color: black;
+  }
+  
+  @media (max-width: 768px) {
+    .logo-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .footer {
+      grid-template-columns: 1fr;
+    }
+  }

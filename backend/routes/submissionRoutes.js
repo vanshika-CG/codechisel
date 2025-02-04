@@ -1,41 +1,63 @@
-const express = require('express');
-const { getDB } = require('../config/db');
-const { ObjectId } = require('mongodb');
+const express = require("express");
+const { getDB } = require("../config/db");
+const { ObjectId } = require("mongodb");
 
 const router = express.Router();
 
-// Submit Quiz Answers
-router.post('/:quizId/submit', async (req, res) => {
-    try {
-        const db = getDB();
-        const { quizId } = req.params;
-        const { userId, answers } = req.body;
+// ✅ Fix the endpoint to match frontend request
+router.post("/:quizId/submit", async (req, res) => {
+  try {
+    const db = getDB();
+    const { quizId } = req.params;
+    const { userId, answers } = req.body;
 
-        const quiz = await db.collection("quizzes").findOne({ _id: new ObjectId(quizId) });
-        if (!quiz) return res.status(404).json({ error: "Quiz not found" });
+    console.log("Received submission for quiz:", quizId);
+    console.log("Answers received:", answers);
 
-        let score = 0;
-        const gradingDetails = [];
+    // ✅ Convert `quizId` to `ObjectId`
+    const quiz = await db.collection("quizzes").findOne({ _id: new ObjectId(quizId) });
 
-        quiz.questions.forEach((question, index) => {
-            const isCorrect = question.correctAnswer === answers[index];
-            gradingDetails.push({ question: question.question, correct: isCorrect });
-            if (isCorrect) score += question.points;
-        });
-
-        const result = await db.collection("submissions").insertOne({
-            userId,
-            quizId,
-            answers,
-            score,
-            gradingDetails,
-            submittedAt: new Date()
-        });
-
-        res.status(201).json({ message: "Submission successful", submissionId: result.insertedId, score });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to submit quiz", details: err.message });
+    if (!quiz) {
+      console.error("Quiz not found in database");
+      return res.status(404).json({ error: "Quiz not found" });
     }
+
+    let score = 0;
+    const gradingDetails = [];
+
+    quiz.questions.forEach((question, index) => {
+      const isCorrect = question.correctAnswer === answers[index];
+      gradingDetails.push({
+        question: question.question,
+        selectedAnswer: answers[index],
+        correctAnswer: question.correctAnswer,
+        isCorrect,
+      });
+      if (isCorrect) score += question.points;
+    });
+
+    // ✅ Save submission to database
+    const result = await db.collection("submissions").insertOne({
+      userId,
+      quizId,
+      answers,
+      score,
+      gradingDetails,
+      submittedAt: new Date(),
+    });
+
+    console.log("Submission successful:", result.insertedId);
+
+    res.status(201).json({
+      message: "Submission successful",
+      submissionId: result.insertedId,
+      score,
+      gradingDetails,
+    });
+  } catch (err) {
+    console.error("Submission error:", err.message);
+    res.status(500).json({ error: "Failed to submit quiz", details: err.message });
+  }
 });
 
 module.exports = router;

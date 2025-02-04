@@ -1,6 +1,6 @@
-// App.js
-import React from 'react';
+import React, { useState } from 'react';
 import './Courses.css';
+import DevelopmentFieldSelector from '../components/Field'; // Import the DevelopmentFieldSelector
 
 const CourseCard = ({ title, icon, description }) => (
   <div className="course-card">
@@ -11,6 +11,8 @@ const CourseCard = ({ title, icon, description }) => (
 );
 
 const App = () => {
+  const [showDevelopmentFields, setShowDevelopmentFields] = useState(false); // Track whether to show fields
+
   const myCourses = [
     {
       title: "Python",
@@ -77,35 +79,42 @@ const App = () => {
     }
   ];
 
+  const handleChoosePathClick = () => {
+    setShowDevelopmentFields(true); // Show the development field selector
+  };
+
   return (
     <div className="app">
-     
-      
-      <main>
-        <section className="my-courses">
-          <h2>My Courses</h2>
-          <div className="course-grid">
-            {myCourses.map((course, index) => (
-              <CourseCard key={index} {...course} />
-            ))}
-          </div>
-        </section>
+      {/* Conditionally render DevelopmentFieldSelector if showDevelopmentFields is true */}
+      {showDevelopmentFields ? (
+        <DevelopmentFieldSelector />
+      ) : (
+        <main>
+          <section className="my-courses">
+            <h2>My Courses</h2>
+            <div className="course-grid">
+              {myCourses.map((course, index) => (
+                <CourseCard key={index} {...course} />
+              ))}
+            </div>
+          </section>
 
-        <section className="explore-courses">
-          <h2>Explore Our Courses</h2>
-          <div className="course-grid">
-            {exploreCourses.map((course, index) => (
-              <CourseCard key={index} {...course} />
-            ))}
-          </div>
-        </section>
+          <section className="explore-courses">
+            <h2>Explore Our Courses</h2>
+            <div className="course-grid">
+              {exploreCourses.map((course, index) => (
+                <CourseCard key={index} {...course} />
+              ))}
+            </div>
+          </section>
 
-        <section className="cta">
-          <h2>Take your coding skills to the next level!</h2>
-          <p>Start learning today with our expert-led courses and comprehensive curriculum.</p>
-          <button className="choose-path-btn">Choose your Path</button>
-        </section>
-      </main>
+          <section className="cta">
+            <h2>Take your coding skills to the next level!</h2>
+            <p>Start learning today with our expert-led courses and comprehensive curriculum.</p>
+            <button className="choose-path-btn" onClick={handleChoosePathClick}>Choose your Path</button>
+          </section>
+        </main>
+      )}
 
       <footer>
         <div className="footer-section">
