@@ -9,13 +9,24 @@ const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both ports
+    credentials: true
+}));
+
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 3600000 } // 1-hour session expiry
 }));
+
+// const noteSchema = new mongoose.Schema({
+//     title: String,
+//     content: String,
+//     color: String
+//   });
 
 // Routes
 app.use('/login', require('./routes/login')); // Authentication routes
@@ -24,6 +35,8 @@ app.use('/courses', require('./routes/courses'));
 app.use('/content', require('./routes/content')); // Content management routes
 app.use('/quizzes', require('./routes/quizRoutes'));
 app.use('/submissions', require('./routes/submissionRoutes'));
+// app.use('/api/notes', require('./routes/noteRoutes'));
+
 
 // Connect to MongoDB and start the server
 connectDB().then(() => {

@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Courses from "./components/Courses";
 import Tutorials from "./components/Tutorials";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Login from "./components/Login";
+import Notes from "./components/Notes";
+import QuizList from "./components/QuizList";
+import QuizDetails from "./components/QuizDetails";
+import QuizSubmit from "./components/QuizSubmit";
 
 function App() {
   const navigate = useNavigate(); 
@@ -29,7 +33,12 @@ function App() {
         <Route path="/tutorials" element={<Tutorials />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} /> 
+        <Route path="/login" element={<Login />} />
+        <Route path="/notes" element={<Notes />} />
+        <Route path="/quiz" element={<QuizList />} />
+        <Route path="/quiz/:id" element={<QuizDetails />} />
+        <Route path="/quiz/:id/submit" element={<QuizSubmit />} />
+
       </Routes>
     </>
   );

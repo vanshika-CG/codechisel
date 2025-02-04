@@ -8,9 +8,11 @@ import code from "../assets/coding.png";
 import icon from "../assets/js.png";
 import icon2 from "../assets/python.png";
 import icon3 from "../assets/react.png";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
+  const navigate = useNavigate();
   return (
     <div className="wrapper">
       <div className="main">
@@ -68,9 +70,12 @@ const Home = () => {
   Join thousands of developers in epic coding journey.</p>
 
   <div className="btn">
-  <button className="quest">Start Quiz</button>
-  <button className="quest1">Join Battle</button>
-</div>
+            {/* Navigate to quiz list when clicked */}
+            <button className="quest" onClick={() => navigate("/quiz")}>
+              Start Quiz
+            </button>
+            <button className="quest1">Join Battle</button>
+          </div>
 
 </div>
 

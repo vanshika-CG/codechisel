@@ -1,5 +1,4 @@
-Login.css
-body {
+/* body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f9;
     margin: 0;
@@ -8,7 +7,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
+} */
 
 .login-container {
     background: #ffffff;
@@ -43,48 +42,35 @@ body {
     border-color: #007bff;
 }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.remember-me label {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    align-items: center;
-}
-
-.remember-me input {
-    margin-right: 6px;
-}
-
-.forgot-password {
-    font-size: 14px;
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.forgot-password:hover {
-    color: #0056b3;
-}
-
-.login-button {
+.login-button, .register-button, .logout-button {
     width: 100%;
     background-color: #007bff;
     color: white;
     border: none;
     padding: 12px;
-    margin-top: 20px;
+    margin-top: 15px;
     border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.login-button:hover {
+.login-button:hover, .register-button:hover, .logout-button:hover {
     background-color: #0056b3;
+}
+
+.register-button {
+    background-color: #28a745;
+}
+
+.register-button:hover {
+    background-color: #218838;
+}
+
+.logout-button {
+    background-color: #dc3545;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './Tutorials.css';
 import tuto1 from "../assets/pythontuto.png";
 import tuto2 from "../assets/jstuto.png";
@@ -25,12 +26,13 @@ const TutorialCard = ({ title, logo, description, color }) => (
 );
 
 const App = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
   const tutorials = [
     {
-  
-      logo: tuto1, 
+      logo: tuto1,
       title: 'PYTHON TUTORIAL',
-      description: 'Introduction to python',
+      description: 'Introduction to Python',
       color: '#1e293b'
     },
     {
@@ -41,50 +43,50 @@ const App = () => {
     },
     {
       title: 'CSS',
-      logo:tuto3 ,
-      description: 'Introduction to python',
+      logo: tuto3,
+      description: 'Introduction to CSS',
       color: '#2563eb'
     },
     {
       title: 'React Tutorials',
       logo: tuto4,
-      description: 'JavaScript Essentials',
+      description: 'React Basics',
       color: '#1e293b'
     },
     {
       title: 'C++ PROGRAMMING',
       logo: tuto5,
-      description: 'Introduction to python',
+      description: 'Learn C++ Basics',
       color: '#1e293b'
     },
     {
       title: 'C Programming Tutorial',
       logo: tuto6,
-      description: 'JavaScript Essentials',
+      description: 'Master C Programming',
       color: '#1e293b'
     },
     {
       title: 'SQL Tutorial',
       logo: tuto7,
-      description: 'Database fundamentals',
+      description: 'Database Fundamentals',
       color: '#1e293b'
     },
     {
       title: 'MONGODB TUTORIAL',
       logo: tuto8,
-      description: 'NoSQL database basics',
+      description: 'NoSQL Database Basics',
       color: '#1e293b'
     },
     {
       title: 'HTML',
       logo: tuto9,
-      description: 'Web fundamentals',
+      description: 'Web Development Basics',
       color: '#1e293b'
     },
     {
       title: 'JAVA TUTORIAL',
       logo: tuto10,
-      description: 'Java programming basics',
+      description: 'Java Programming Basics',
       color: '#1e293b'
     }
   ];
@@ -96,7 +98,7 @@ const App = () => {
           <div className="nav-right">
             <div className="search-container">
               <input type="search" placeholder="Search" className="search-input" />
-              <button className="notes-button">
+              <button className="notes-button" onClick={() => navigate('/notes')}>
                 <span className="book-icon">📚</span>
                 Make notes
               </button>
