@@ -1,43 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Notes.css';
 
 const NotesApp = () => {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      title: 'JavaScript Basics',
-      content: 'Objects, Functions and basic operations in JavaScript. Other topics: Variables, Loops, Basic operators',
-      color: '#ffcce6'
-    },
-    {
-      id: 2,
-      title: 'React Hooks',
-      content: 'Understanding React Hooks and their use cases: useState, useEffect, useContext, useReducer',
-      color: '#b3ffcc'
-    }
-  ]);
+  const [notes, setNotes] = useState([]);
+  const [noteId, setNoteId] = useState(null); // Track the note being edited
+  const [noteTitle, setNoteTitle] = useState('');
+  const [noteContent, setNoteContent] = useState('');
 
-  const [newNoteTitle, setNewNoteTitle] = useState('');
-  const [newNoteContent, setNewNoteContent] = useState('');
-
-  const handleCreateNote = () => {
-    if (newNoteTitle.trim() && newNoteContent.trim()) {
-      const newNote = {
-        id: Date.now(),
-        title: newNoteTitle,
-        content: newNoteContent,
-        color: getRandomColor()
-      };
-      setNotes([...notes, newNote]);
-      setNewNoteTitle('');
-      setNewNoteContent('');
+  // Fetch notes from backend (Runs on first load and whenever state updates)
+  const fetchNotes = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/notes");
+      const data = await res.json();
+      setNotes(data);
+    } catch (err) {
+      console.error("Error fetching notes:", err);
     }
   };
 
-  const handleDeleteNote = (id) => {
-    setNotes(notes.filter(note => note.id !== id));
+  useEffect(() => {
+    fetchNotes(); // Load notes when the component mounts
+  }, []);
+
+  // Create or Update Note
+  const handleSaveNote = async () => {
+    if (!noteTitle.trim() || !noteContent.trim()) return;
+  
+    if (noteId) {
+      // **UPDATE Note**
+      try {
+        const existingNote = notes.find(note => note._id === noteId);
+        const updatedNote = {
+          title: noteTitle,
+          content: noteContent,
+          color: existingNote?.color || getRandomColor(), // Preserve color
+        };
+  
+        const res = await fetch(`http://localhost:4000/api/notes/${noteId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedNote)
+        });
+  
+        if (!res.ok) throw new Error("Failed to update note");
+  
+        const savedNote = await res.json();
+  
+        // Update UI immediately after successful update
+        setNotes(notes.map(note => (note._id === noteId ? savedNote : note)));
+  
+        // Clear input fields
+        setNoteId(null);
+        setNoteTitle('');
+        setNoteContent('');
+      } catch (error) {
+        console.error("Error updating note:", error);
+      }
+    } else {
+      // **CREATE New Note**
+      const newNote = { title: noteTitle, content: noteContent, color: getRandomColor() };
+  
+      try {
+        const res = await fetch("http://localhost:4000/api/notes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newNote)
+        });
+  
+        if (!res.ok) throw new Error("Failed to create note");
+  
+        const savedNote = await res.json();
+  
+        // Update UI immediately
+        setNotes([...notes, savedNote]);
+  
+        // Clear input fields
+        setNoteTitle('');
+        setNoteContent('');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  
+
+  // Delete a note
+  const handleDeleteNote = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:4000/api/notes/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete note");
+
+      // Update UI immediately
+      setNotes(notes.filter(note => note._id !== id));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  // Edit a note (Move note data to input fields)
+  const handleEditNote = (note) => {
+    setNoteId(note._id);
+    setNoteTitle(note.title);
+    setNoteContent(note.content);
+  };
+
+  // Generate random background color for notes
   const getRandomColor = () => {
     const colors = ['#ffcce6', '#b3ffcc', '#cce6ff', '#ffffcc'];
     return colors[Math.floor(Math.random() * colors.length)];
@@ -45,20 +112,20 @@ const NotesApp = () => {
 
   return (
     <div className="notes-container">
-
       <div className="notes-section">
-        <h1>My Notes<button className="add-button">+</button></h1>
-        
+        <h1>My Notes</h1>
+
         <div className="notes-grid">
           {notes.map(note => (
             <div 
-              key={note.id} 
+              key={note._id} 
               className="note-card"
               style={{ backgroundColor: note.color }}
             >
               <div className="note-header">
                 <h3>{note.title}</h3>
-                <button className="edit-button">✎</button>
+                <button className="edit-button" onClick={() => handleEditNote(note)}>✎</button>
+                <button className="delete-button" onClick={() => handleDeleteNote(note._id)}>🗑</button>
               </div>
               <p>{note.content}</p>
             </div>
@@ -66,59 +133,35 @@ const NotesApp = () => {
         </div>
 
         <div className="create-note-section">
-          <h2>Create New Notes</h2>
+          <h2>{noteId ? "Edit Note" : "Create New Note"}</h2>
           <input
             type="text"
             placeholder="Note Title"
-            value={newNoteTitle}
-            onChange={(e) => setNewNoteTitle(e.target.value)}
+            value={noteTitle}
+            onChange={(e) => setNoteTitle(e.target.value)}
           />
           <textarea
-            placeholder="Write Your note content here...."
-            value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
+            placeholder="Write your note content here..."
+            value={noteContent}
+            onChange={(e) => setNoteContent(e.target.value)}
           />
           <div className="note-actions">
-            <button className="share-button">Share</button>
+            <button className="add-button" onClick={handleSaveNote}>
+              {noteId ? "Update Note" : "Add Note"}
+            </button>
             <button 
               className="delete-button"
               onClick={() => {
-                setNewNoteTitle('');
-                setNewNoteContent('');
+                setNoteId(null);
+                setNoteTitle('');
+                setNoteContent('');
               }}
             >
-              Delete
+              Clear
             </button>
           </div>
         </div>
       </div>
-
-      <footer className="footer">
-        <div className="footer-section">
-          <h3>Learning Paths</h3>
-          <ul>
-            <li>Web Development</li>
-            <li>Python</li>
-            <li>React</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>Resources</h3>
-          <ul>
-            <li>Documentation</li>
-            <li>Community</li>
-            <li>Blog</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>Contact</h3>
-          <p>support@codemaster.com</p>
-          <p>+1(555) 123-4567</p>
-        </div>
-        <div className="footer-bottom">
-          <p>© 2024 CodeMaster. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 };
