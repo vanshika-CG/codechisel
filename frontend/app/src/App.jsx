@@ -10,6 +10,7 @@ import Notes from "./components/Notes";
 import QuizList from "./components/QuizList";
 import QuizDetails from "./components/QuizDetails";
 import QuizSubmit from "./components/QuizSubmit";
+import CodeEditor from "./components/Codeditor";
 
 function App() {
   const navigate = useNavigate(); 
@@ -38,7 +39,7 @@ function App() {
         <Route path="/quiz" element={<QuizList />} />
         <Route path="/quiz/:id" element={<QuizDetails />} />
         <Route path="/quiz/:id/submit" element={<QuizSubmit />} />
-
+        <Route path="/code-editor" element={<CodeEditor />} />
       </Routes>
     </>
   );

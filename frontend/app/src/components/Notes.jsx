@@ -111,6 +111,7 @@ const NotesApp = () => {
   };
 
   return (
+    <div className="wrapper">
     <div className="notes-container">
       <div className="notes-section">
         <h1>My Notes</h1>
@@ -162,6 +163,7 @@ const NotesApp = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import './Field.css';
 
 const DevelopmentFieldSelector = () => {
   return (
+    <div className="wrapper">
     <div className="development-field-selector">
       <div className="field-container">
         <h2 className="field-title">Mobile Development</h2>
@@ -49,6 +50,7 @@ const DevelopmentFieldSelector = () => {
         <p className="field-description">Master the full software development lifecycle.</p>
         <button className="field-button">Explore Now</button>
       </div>
+    </div>
     </div>
   );
 };

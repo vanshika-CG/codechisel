@@ -80,6 +80,7 @@ html, body {
   margin-left: 50px;
   margin-top: 35px;
   box-shadow: 0 3px 15px #FFC803;
+  color: black;
 }
 
 .start1 {
@@ -231,6 +232,7 @@ html, body {
     margin-top: 50px;
     font-size: larger;
     margin-left: 133px;
+    color: black;
   }
   .quest1{
     border: none;
