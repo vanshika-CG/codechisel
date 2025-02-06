@@ -7,6 +7,11 @@
     --text-light: #ffffff;
   }
   
+  .wrapper {
+    min-height: 100vh;
+    background: rgb(16,4,37);
+    background: linear-gradient(142deg, rgba(16,4,37,1) 0%, rgba(66,46,111,1) 100%);
+  }
   * {
     margin: 0;
     padding: 0;

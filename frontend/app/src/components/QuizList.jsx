@@ -14,6 +14,7 @@ const QuizList = () => {
   }, []);
 
   return (
+    <div className="wrapper">
     <div className="quiz-list-container">
       <h1>Available Quizzes</h1>
       {quizzes.map((quiz) => (
@@ -23,6 +24,7 @@ const QuizList = () => {
           <Link to={`/quiz/${quiz._id}`}>Take Quiz</Link> {/* ✅ Fixed template literal */}
         </div>
       ))}
+    </div>
     </div>
   );
 };

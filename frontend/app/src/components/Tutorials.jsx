@@ -1,106 +1,60 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './Tutorials.css';
-import tuto1 from "../assets/pythontuto.png";
-import tuto2 from "../assets/jstuto.png";
-import tuto3 from "../assets/csstuto.png";
-import tuto4 from "../assets/reacttuto.png";
-import tuto5 from "../assets/c++tuto.png";
-import tuto6 from "../assets/ctuto.png";
-import tuto7 from "../assets/sqltuto.png";
-import tuto8 from "../assets/mongotuto.png";
-import tuto9 from "../assets/htmltuto.png";
-import tuto10 from "../assets/javatuto.png";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./Tutorials.css";
 
-const TutorialCard = ({ title, logo, description, color }) => (
-  <div className="card" style={{ background: color || '#2a2a2a' }}>
-    <div className="card-content">
-      <img src={logo} alt={title} className="card-logo" />
-      <div className="card-info">
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
-    </div>
-    <button className="watch-button">Watch Now</button>
-  </div>
-);
+const API_KEY = "AIzaSyBtmFIoWD0bZk2EyC6VgYjJxugMUOR8-Qk"; // Replace with your YouTube API Key
+const BASE_URL = "https://www.googleapis.com/youtube/v3/search";
 
 const App = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("programming tutorial");
+  const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null); // Store clicked video ID
 
-  const tutorials = [
-    {
-      logo: tuto1,
-      title: 'PYTHON TUTORIAL',
-      description: 'Introduction to Python',
-      color: '#1e293b'
-    },
-    {
-      title: 'JavaScript',
-      logo: tuto2,
-      description: 'JavaScript Essentials',
-      color: '#fbbf24'
-    },
-    {
-      title: 'CSS',
-      logo: tuto3,
-      description: 'Introduction to CSS',
-      color: '#2563eb'
-    },
-    {
-      title: 'React Tutorials',
-      logo: tuto4,
-      description: 'React Basics',
-      color: '#1e293b'
-    },
-    {
-      title: 'C++ PROGRAMMING',
-      logo: tuto5,
-      description: 'Learn C++ Basics',
-      color: '#1e293b'
-    },
-    {
-      title: 'C Programming Tutorial',
-      logo: tuto6,
-      description: 'Master C Programming',
-      color: '#1e293b'
-    },
-    {
-      title: 'SQL Tutorial',
-      logo: tuto7,
-      description: 'Database Fundamentals',
-      color: '#1e293b'
-    },
-    {
-      title: 'MONGODB TUTORIAL',
-      logo: tuto8,
-      description: 'NoSQL Database Basics',
-      color: '#1e293b'
-    },
-    {
-      title: 'HTML',
-      logo: tuto9,
-      description: 'Web Development Basics',
-      color: '#1e293b'
-    },
-    {
-      title: 'JAVA TUTORIAL',
-      logo: tuto10,
-      description: 'Java Programming Basics',
-      color: '#1e293b'
+  // Fetch YouTube videos based on search
+  const fetchVideos = async (query) => {
+    try {
+      const response = await axios.get(BASE_URL, {
+        params: {
+          part: "snippet",
+          maxResults: 10,
+          q: `${query} programming tutorial`,
+          key: API_KEY,
+          type: "video",
+          videoCategoryId: "28", // Technology category
+        },
+      });
+
+      setVideos(response.data.items);
+    } catch (error) {
+      console.error("Error fetching YouTube videos:", error);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchVideos(searchQuery); // Fetch default tutorials on page load
+  }, []);
 
   return (
+    <div className="wrapper">
     <div className="app">
       <header>
         <nav>
           <div className="nav-right">
             <div className="search-container">
-              <input type="search" placeholder="Search" className="search-input" />
-              <button className="notes-button" onClick={() => navigate('/notes')}>
-                <span className="book-icon">📚</span>
-                Make notes
+              <input
+                type="search"
+                placeholder="Search"
+                className="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button className="search-button" onClick={() => fetchVideos(searchQuery)}>
+                🔍 Search
+              </button>
+              <button className="notes-button" onClick={() => navigate("/notes")}>
+                📚 Make Notes
               </button>
             </div>
           </div>
@@ -108,9 +62,39 @@ const App = () => {
       </header>
 
       <main className="tutorial-grid">
-        {tutorials.map((tutorial, index) => (
-          <TutorialCard key={index} {...tutorial} />
-        ))}
+        {selectedVideo ? (
+          // If a video is selected, show embedded YouTube player
+          <div className="video-container">
+            <iframe
+              width="100%"
+              height="500"
+              src={`https://www.youtube.com/embed/${selectedVideo}`}
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+            <button className="back-button" onClick={() => setSelectedVideo(null)}>
+              🔙 Back to Tutorials
+            </button>
+          </div>
+        ) : (
+          // Show tutorial cards if no video is selected
+          videos.map((video) => (
+            <div key={video.id.videoId} className="card">
+              <img
+                src={video.snippet.thumbnails.high.url}
+                alt={video.snippet.title}
+                className="card-logo"
+              />
+              <div className="card-info">
+                <h3>{video.snippet.title}</h3>
+                <p>{video.snippet.channelTitle}</p>
+              </div>
+              <button className="watch-button" onClick={() => setSelectedVideo(video.id.videoId)}>
+                Watch Now
+              </button>
+            </div>
+          ))
+        )}
       </main>
 
       <footer>
@@ -131,10 +115,11 @@ const App = () => {
           </ul>
         </div>
         <div className="footer-section">
-         <p className='feedback'>Learn to code with interactive tutorials and real-time feedback.</p>
-         <h2>Learning Paths</h2>
+          <p className="feedback">Learn to code with interactive tutorials and real-time feedback.</p>
+          <h2>Learning Paths</h2>
         </div>
       </footer>
+    </div>
     </div>
   );
 };

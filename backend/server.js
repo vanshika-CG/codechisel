@@ -31,6 +31,7 @@ app.use('/content', require('./routes/content')); // Content management routes
 app.use('/quizzes', require('./routes/quizRoutes'));
 app.use('/submissions', require('./routes/submissionRoutes'));
 app.use('/api/notes', require('./routes/noteRoutes'));
+app.use('/api/code', require('./routes/codeExecution')); // Code execution route
 
 
 // Connect to MongoDB and start the server

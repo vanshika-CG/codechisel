@@ -84,6 +84,7 @@ const App = () => {
   };
 
   return (
+    <div className="wrapper">
     <div className="app">
       {/* Conditionally render DevelopmentFieldSelector if showDevelopmentFields is true */}
       {showDevelopmentFields ? (
@@ -144,6 +145,7 @@ const App = () => {
           </div>
         </div>
       </footer>
+    </div>
     </div>
   );
 };
