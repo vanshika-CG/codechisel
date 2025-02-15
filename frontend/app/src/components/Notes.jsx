@@ -124,7 +124,7 @@ const NotesApp = () => {
               style={{ backgroundColor: note.color }}
             >
               <div className="note-header">
-                <h3>{note.title}</h3>
+                <h3 className='tittle'>{note.title}</h3>
                 <button className="edit-button" onClick={() => handleEditNote(note)}>✎</button>
                 <button className="delete-button" onClick={() => handleDeleteNote(note._id)}>🗑</button>
               </div>

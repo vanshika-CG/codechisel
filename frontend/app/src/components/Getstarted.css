@@ -1,0 +1,150 @@
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    background: rgb(16,4,37);
+    background: linear-gradient(142deg, rgba(16,4,37,1) 0%, rgba(66,46,111,1) 100%);
+  }
+
+.started{
+  background-color: white;
+  color: #100425;
+  height: 116vh;
+  width: 115%;
+  margin: 25px;
+  border-radius: 15px;
+  box-shadow: 0 3px 57px #000000;
+}
+
+.getting{
+  padding-top: 30px;
+  padding-left: 20px;
+  color: black;
+}
+
+.min{
+  display: flex;
+  margin: 25px 25px 0 25px;
+  gap: 10px;
+  width: 22%;
+}
+.clock{
+ width: 35px;
+}
+
+.read{
+margin-top: 8px;
+font-size: large;
+}
+.beg{
+margin-top: 13px;
+font-size: large;
+}
+.graph{
+  width: 29px;
+}
+
+.fund{
+  margin-left: 20px;
+  margin-top: 15px;
+  color: black;
+  width: 90%;
+}
+
+.table{
+  margin-top: 20px;
+  margin-left: 20px;
+  color: black;
+}
+
+
+.topics{
+  display: flex;
+  margin: 25px 25px 0 25px;
+  gap: 10px;
+}
+.topics1{
+  display: flex;
+  margin: 20px 25px 0 25px;
+  gap: 10px;
+}
+
+.lan{
+  margin-top: 5px;
+}
+
+.points{
+  width: 25px;
+}
+
+.editor{
+  background-color: #111827;
+  width: 90%;
+  color: white;
+  height: 130px;
+  margin: 25px;
+  border-radius: 10px;
+}
+
+.comments1{
+  padding: 8px;
+  margin-left: 10px;
+  margin-top: 4px;
+}
+
+.user{
+  background-color: white;
+  width: 30vw;
+  height: 25vh;
+  color: #000000;
+  border-radius: 8px;
+  margin-top: 48px;
+  margin-left: 10px;
+  box-shadow: 0 2px 37px #000000;
+}
+
+.side{
+  width: 50%;
+}
+.admin{
+padding-top: 20px;
+margin-bottom: 6px;
+color: black;
+}
+
+.profile{
+  display: flex;
+  gap: 20px;
+}
+
+.adjust{
+  height: 40px;
+}
+.deve{
+  color: gray;
+}
+
+.js{
+  margin-left: 5px;
+}
+.tuto{
+  background-color: white;
+  height: 50vh;
+  width: 30vw;
+  margin-left: 10px;
+  margin-top: 20px;
+  box-shadow: 0 2px 37px #000000;
+  color: #000000;
+  border-radius: 8px;
+}
+
+.user1{
+  background-color: white;
+  width: 30vw;
+  height: 25vh;
+  color: #000000;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-left: 10px;
+  box-shadow: 0 2px 37px #000000;
+}

@@ -42,42 +42,32 @@ const LandingPage = () => {
         </div>
       </main>
 
-      <footer className="footer">
+      <footer>
         <div className="footer-section">
-          <h3>Learning Paths</h3>
-          <p>Learn to code with interactive tutorials and real-time feedback.</p>
+          <h4>Learning Paths</h4>
           <ul>
-            <li>Web Development</li>
-            <li>Python</li>
-            <li>Javascript</li>
-            <li>React</li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Python</a></li>
+            <li><a href="#">React</a></li>
           </ul>
         </div>
-
         <div className="footer-section">
-          <h3>Resources</h3>
+          <h4>Resources</h4>
           <ul>
-            <li>Documentation</li>
-            <li>Community</li>
-            <li>Blog</li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="#">Blog</a></li>
           </ul>
         </div>
-
         <div className="footer-section">
-          <h3>Contact</h3>
-          <p>Support@codemaster.com</p>
-          <p>+1(555) 123-4567</p>
-          <div className="social-links">
-            <a href="#twitter">Twitter</a>
-            <a href="#github">GitHub</a>
-            <a href="#linkedin">LinkedIn</a>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>© 2024 CodeMaster. All rights reserved.</p>
+          <p className="feedback">Learn to code with interactive tutorials and real-time feedback.</p>
+          <h2>Learning Paths</h2>
         </div>
       </footer>
+
+      
+
+  
     </div>
   );
 };
