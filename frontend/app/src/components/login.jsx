@@ -1,68 +1,57 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import "./Login.css"; 
+import "./Login.css";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = () => {
+  const [isRegister, setIsRegister] = useState(false);
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/login/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usernameOrEmail: email, password }),
-        credentials: "include"
-      });
-
-      const result = await response.text();
-      console.log("Server Response:", result);
-
-      if (response.ok) {
-        alert("Login successful!");
-        navigate("/dashboard"); // Redirect to dashboard or home page
-      } else {
-        alert("Login failed: " + result);
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      alert("An error occurred. Please try again.");
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/login/logout", {
-        method: "POST",
-        credentials: "include"
-      });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-      if (response.ok) {
-        alert("Logged out successfully!");
-        navigate("/");
-      } else {
-        alert("Logout failed!");
+    try {
+      const endpoint = isRegister ? "register" : "login";
+      const response = await axios.post(`http://localhost:4000/login/${endpoint}`, formData);
+
+      alert(response.data);
+      if (!isRegister) {
+        navigate("/dashboard");
       }
-    } catch (error) {
-      console.error("Error logging out:", error);
-      alert("An error occurred while logging out.");
+    } catch (err) {
+      setError(err.response?.data || "Something went wrong");
     }
   };
 
   return (
-    <div className="login-container">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h2 className="login-title">Login</h2>
-        <div className="form-group">
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="input-field" />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="input-field" />
-          <button onClick={handleLogin} className="login-button">Login</button>
-          <button onClick={() => navigate("/signup")} className="register-button">Register</button>
-          <button onClick={handleLogout} className="logout-button">Logout</button>
-        </div>
-      </motion.div>
+    <div className="auth-container">
+      <div className="auth-box">
+        <h2>{isRegister ? "Create an Account" : "Login to Your Account"}</h2>
+        {error && <p className="error">{error}</p>}
+
+        <form onSubmit={handleSubmit}>
+          {isRegister && (
+            <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
+          )}
+          <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
+          <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+
+          <button type="submit">{isRegister ? "Register" : "Login"}</button>
+        </form>
+
+        <p className="toggle" onClick={() => setIsRegister(!isRegister)}>
+          {isRegister ? "Already have an account? Login" : "Don't have an account? Register"}
+        </p>
+      </div>
     </div>
   );
-}
+};
+
+export default Login;
