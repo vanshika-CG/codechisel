@@ -24,6 +24,10 @@
     min-height: calc(100vh - 200px);
   }
   
+  .tittle{
+    color: #000;
+    text-decoration: solid;
+  }
   .notes-section h1 {
     display: flex;
     justify-content: space-between;

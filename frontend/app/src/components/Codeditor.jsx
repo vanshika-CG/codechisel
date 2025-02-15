@@ -9,7 +9,7 @@ import "codemirror/mode/clike/clike";
 import "./Codeditor.css";
 
 const CodeEditor = () => {
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState("// Write your code here...");
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
 
@@ -62,3 +62,8 @@ const CodeEditor = () => {
 };
 
 export default CodeEditor;
+
+
+
+
+

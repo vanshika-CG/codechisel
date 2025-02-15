@@ -28,7 +28,7 @@ const Home = () => {
           around the globe. </p>
 
           <div className="get">
-          <button className="start" onClick={() => navigate("/code-editor")}>Get Started</button>            <div><button className="start1"><img src={video} alt="Verified Icon" className="video" /><p>How it works</p></button></div>
+          <button className="start" onClick={() => navigate("/getstarted")}>Get Started</button>            <div><button className="start1"><img src={video} alt="Verified Icon" className="video" /><p>How it works</p></button></div>
           </div>
         </div>
 

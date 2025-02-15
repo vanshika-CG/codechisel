@@ -45,52 +45,6 @@
     margin-top: 1rem;
   }
   
-  .footer {
-    background-color: #838080;
-    padding: 3rem 2rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-  
-  .footer-section h3 {
-    color: black;
-    margin-bottom: 1rem;
-  }
-  
-  .footer-section ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-section li {
-    margin-bottom: 0.5rem;
-    color: black;
-  }
-  .footer-section p {
-
-    color: black;
-  }
-  
-  .social-links {
-    margin-top: 1rem;
-  }
-  
-  .social-links a {
-    margin-right: 1rem;
-    color: black;
-    text-decoration: none;
-  }
-  
-  .footer-bottom {
-    grid-column: 1 / -1;
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #ddd;
-    color: black;
-  }
-  
   @media (max-width: 768px) {
     .logo-grid {
       grid-template-columns: repeat(2, 1fr);
