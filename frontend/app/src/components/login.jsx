@@ -23,7 +23,7 @@ const Login = () => {
 
       alert(response.data);
       if (!isRegister) {
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err) {
       setError(err.response?.data || "Something went wrong");

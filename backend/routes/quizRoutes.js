@@ -8,24 +8,48 @@ const router = express.Router();
 router.post('/', async (req, res) => {
     try {
         const db = getDB();
-        const { title, description, courseId, questions } = req.body;
-        const result = await db.collection("quizzes").insertOne({ title, description, courseId, questions, createdAt: new Date() });
+        const { title, description, difficulty, courseId, questions } = req.body;
+
+        // ✅ Validate difficulty before inserting
+        const validDifficulties = ["Easy", "Medium", "Hard"];
+        if (!validDifficulties.includes(difficulty)) {
+            return res.status(400).json({ error: "Invalid difficulty level. Use Easy, Medium, or Hard." });
+        }
+
+        const result = await db.collection("quizzes").insertOne({
+            title,
+            description,
+            difficulty, // ✅ Make sure difficulty is stored
+            courseId,
+            questions,
+            createdAt: new Date()
+        });
+
         res.status(201).json({ message: "Quiz created", quizId: result.insertedId });
     } catch (err) {
         res.status(500).json({ error: "Failed to create quiz", details: err.message });
     }
 });
 
+
 // Get all Quizzes
 router.get('/', async (req, res) => {
     try {
         const db = getDB();
-        const quizzes = await db.collection("quizzes").find().toArray();
+        const difficulty = req.query.difficulty; // Get difficulty from query params
+
+        let query = {};
+        if (difficulty) {
+            query.difficulty = difficulty; // Apply filter if difficulty is provided
+        }
+
+        const quizzes = await db.collection("quizzes").find(query).toArray();
         res.status(200).json(quizzes);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch quizzes", details: err.message });
     }
 });
+
 
 // Get a Quiz by ID
 router.get('/:id', async (req, res) => {

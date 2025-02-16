@@ -4,18 +4,20 @@ const quizModel = {
     _id: ObjectId,
     title: String,
     description: String,
+    difficulty: String, // NEW FIELD: "Easy", "Medium", "Hard"
     courseId: ObjectId,
     questions: [
         {
-            type: String, // "multiple-choice" or "coding"
+            type: String,
             question: String,
-            options: Array, // Only for multiple-choice
+            options: Array, 
             correctAnswer: String,
-            correctCode: String, // Only for coding quizzes
+            correctCode: String, 
             points: Number
         }
     ],
     createdAt: Date
 };
+
 
 module.exports = quizModel;
