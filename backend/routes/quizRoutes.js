@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 const router = express.Router();
 
 // Create a Quiz
-router.post('/', async (req, res) => {
+router.post('/quizzes', async (req, res) => {
     try {
         const db = getDB();
         const { title, description, difficulty, courseId, questions } = req.body;
