@@ -6,7 +6,7 @@
   height: 100vh;
   background: linear-gradient(135deg, #1e1e2f, #3a1c71, #d76d77);
   background-size: 400% 400%;
-  animation: bg-animation 8s infinite alternate;
+  animation: bg-animation 4s infinite alternate;
 }
 
 /* Gradient Animation */

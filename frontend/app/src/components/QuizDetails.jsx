@@ -9,6 +9,7 @@ const QuizDetails = () => {
   const [answers, setAnswers] = useState({});
   const [gradingDetails, setGradingDetails] = useState(null);
   const [score, setScore] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Track current question index
 
   useEffect(() => {
     fetch(`http://localhost:4000/quizzes/${id}`)
@@ -30,19 +31,18 @@ const QuizDetails = () => {
         setLoading(false);
       });
   }, [id]);
-  
-  const handleOptionSelect = (questionIndex, option) => {
+
+  const handleOptionSelect = (option) => {
     setAnswers((prev) => ({
       ...prev,
-      [questionIndex]: option,
+      [currentQuestionIndex]: option,
     }));
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting answers:", answers); // Debugging
-  
+    console.log("Submitting answers:", answers);
+
     try {
-      // ✅ Ensure correct API endpoint
       const response = await fetch(`http://localhost:4000/submissions/${id}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,80 +51,94 @@ const QuizDetails = () => {
           answers: Object.values(answers),
         }),
       });
-      
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to submit quiz: ${errorText}`);
       }
-  
+
       const result = await response.json();
       console.log("Response from server:", result);
-  
+
       setGradingDetails(result.gradingDetails);
       setScore(result.score);
     } catch (error) {
       console.error("Error submitting quiz:", error);
     }
   };
-  
 
   if (loading) return <p>Loading...</p>;
   if (!quiz) return <p>Quiz not found.</p>;
+
+  const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
     <div className="quiz-details-container">
       <h1>{quiz.title}</h1>
       <p>{quiz.description}</p>
 
+      <h2>Question {currentQuestionIndex + 1} of {quiz.questions.length}</h2>
+      <div className="question-container">
+        <p>{currentQuestion.question}</p>
+        {currentQuestion.type === "multiple-choice" ? (
+          <ul>
+            {currentQuestion.options.map((option, i) => (
+              <li key={i}>
+                <label>
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestionIndex}`}
+                    value={option}
+                    checked={answers[currentQuestionIndex] === option}
+                    onChange={() => handleOptionSelect(option)}
+                  />
+                  {option}
+                </label>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <textarea
+            placeholder="Write your answer here..."
+            value={answers[currentQuestionIndex] || ""}
+            onChange={(e) => handleOptionSelect(e.target.value)}
+          />
+        )}
 
-      <h2>Questions</h2>
-      {quiz.questions.map((q, index) => (
-       <div key={index} className="question-container">
-          <p>{q.question}</p>
-          {q.type === "multiple-choice" ? (
-            <ul>
-              {q.options.map((option, i) => (
-                <li key={i}>
-                  <label>
-                    <input
-                      type="radio"
-                      name={`question-${index}`} // ✅ Fixed radio button name
-                      value={option}
-                      checked={answers[index] === option}
-                      onChange={() => handleOptionSelect(index, option)}
-                    />
-                    {option}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <textarea
-              placeholder="Write your answer here..."
-              value={answers[index] || ""}
-              onChange={(e) => handleOptionSelect(index, e.target.value)}
-            />
-          )}
+        {gradingDetails && gradingDetails[currentQuestionIndex] && (
+          <p>
+            {gradingDetails[currentQuestionIndex].isCorrect ? (
+              <span style={{ color: "green" }}>✔ Correct</span>
+            ) : (
+              <span style={{ color: "red" }}>
+                ✖ Incorrect, correct answer: {gradingDetails[currentQuestionIndex].correctAnswer}
+              </span>
+            )}
+          </p>
+        )}
+      </div>
 
-          {/* Show feedback after submission */}
-          {gradingDetails && gradingDetails[index] && (
-            <p>
-              {gradingDetails[index].isCorrect ? (
-                <span style={{ color: "green" }}>✔ Correct</span>
-              ) : (
-                <span style={{ color: "red" }}>
-                  ✖ Incorrect, correct answer: {gradingDetails[index].correctAnswer}
-                </span>
-              )}
-            </p>
-          )}
-        </div>
-      ))}
+      {/* NAVIGATION BUTTONS */}
+      <div className="navigation-buttons">
+        {currentQuestionIndex > 0 && (
+          <button className="prev-button" onClick={() => setCurrentQuestionIndex((prev) => prev - 1)}>
+            Previous
+          </button>
+        )}
 
-<button className="submit-button" onClick={handleSubmit}>Submit Answers</button>
+        {currentQuestionIndex < quiz.questions.length - 1 ? (
+          <button className="next-button" onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}>
+            Next
+          </button>
+        ) : (
+          <button className="submit-button" onClick={handleSubmit}>
+            Submit Answers
+          </button>
+        )}
+      </div>
 
-{score !== null && <h2 className="score-display">Your Score: {score}</h2>}    </div>
+      {score !== null && <h2 className="score-display">Your Score: {score}</h2>}
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import "./login.css";
 
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -23,7 +23,7 @@ const Login = () => {
 
       alert(response.data);
       if (!isRegister) {
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err) {
       setError(err.response?.data || "Something went wrong");
