@@ -3,7 +3,7 @@
     background: rgb(16,4,37);
     background: linear-gradient(142deg, rgba(16,4,37,1) 0%, rgba(66,46,111,1) 100%);
   }
-  /* Main content */
+
   .main-content {
     max-width: 1200px;
     margin: 0 auto;
@@ -24,7 +24,7 @@
     height: 13vh;
   }
   
-  /* Contact section */
+  
   .contact-section {
     text-align: center;
     margin: 2rem 0;
@@ -111,8 +111,7 @@
     gap: 15px;
     margin-top: 20px;
   }
-  
-  /* Responsive design */
+
   @media (max-width: 768px) {
     .nav-menu {
       flex-direction: column;
@@ -267,7 +266,7 @@
 
 
 
-.thank-you-container {
+/* .thank-you-container {
     background: linear-gradient(145deg, #b429eb 0%, #892cc7 100%);
     padding: 2rem;
     border-radius: 1rem;
@@ -330,7 +329,7 @@
     transform: translateY(-2px);
   }
   
-  /* Floating icons */
+ 
   .floating-icons {
     position: absolute;
     top: 0;
@@ -367,7 +366,7 @@
     }
   }
   
-  /* Responsive styles */
+
   @media (max-width: 480px) {
     .thank-you-container {
       padding: 1.5rem;
@@ -386,4 +385,4 @@
       width: 30px;
       height: 30px;
     }
-  }
+  } 

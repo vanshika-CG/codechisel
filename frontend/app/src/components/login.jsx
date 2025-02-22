@@ -16,19 +16,33 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
+    const loginData = isRegister
+      ? formData
+      : { usernameOrEmail: formData.email, password: formData.password }; // ✅ Use correct field names
+  
+    console.log("Sending Data:", loginData); // ✅ Log the fixed data
+  
     try {
       const endpoint = isRegister ? "register" : "login";
-      const response = await axios.post(`http://localhost:4000/login/${endpoint}`, formData);
-
-      alert(response.data);
+      const response = await axios.post(`http://localhost:4000/${endpoint}`, loginData);
+  
       if (!isRegister) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("username", response.data.username);
         navigate("/");
+        window.location.reload();
+      } else {
+        alert("Registration successful! Please log in.");
+        setIsRegister(false);
       }
     } catch (err) {
-      setError(err.response?.data || "Something went wrong");
+      console.error("Error Response:", err.response); // ✅ Log error response
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
+  
+  
 
   return (
     <div className="auth-container">
