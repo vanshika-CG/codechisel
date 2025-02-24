@@ -86,7 +86,7 @@ const Home = () => {
 <h1 className="path">Choosing Your Learning Path</h1>
 <div className="flex">
 <div className="learning">
-  <img src={icon} alt="js" className="icon" />
+  <img src={icon} alt="js" className="icon-cd" />
   <p className="web">Web Development</p>
   <p className="web-d">Master HTML, CSS, and JavaScript to build modern websites and applications.</p>
   <div className="flex">
@@ -95,7 +95,7 @@ const Home = () => {
   </div>
   </div>
 <div className="learning">
-  <img src={icon2} alt="phython" className="icon" />
+  <img src={icon2} alt="phython" className="icon-cd" />
   <p className="web">Phython Programming</p>
   <p className="web-d">Learn Python for data science, automation, and backend development.</p>
   <div className="flex">
@@ -104,7 +104,7 @@ const Home = () => {
   </div>
   </div>
 <div className="learning">
-  <img src={icon3} alt="react" className="icon" />
+  <img src={icon3} alt="react" className="icon-cd" />
   <p className="web">React Development</p>
   <p className="web-d">Build modern user interfaces with React and its ecosystem.</p>
   <div className="flex">

@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
+    "@emailjs/browser": "^4.4.1",
+    "@monaco-editor/react": "^4.7.0",
     "axios": "^1.7.9",
     "codemirror": "^5.65.18",
     "framer-motion": "^12.0.6",

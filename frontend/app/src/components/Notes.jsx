@@ -10,78 +10,57 @@ const NotesApp = () => {
   // Fetch notes from backend (Runs on first load and whenever state updates)
   const fetchNotes = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/notes");
-      const data = await res.json();
-      setNotes(data);
-    } catch (err) {
-      console.error("Error fetching notes:", err);
-    }
-  };
+        const response = await fetch('http://localhost:4000/api/notes');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
+        const data = await response.json();
+
+        if (!Array.isArray(data)) throw new Error("Invalid data format received");
+
+        setNotes(data);
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+        setNotes([]); // Set to an empty array to prevent .map() errors
+    }
+};
+
+  
   useEffect(() => {
     fetchNotes(); // Load notes when the component mounts
   }, []);
 
   // Create or Update Note
   const handleSaveNote = async () => {
+    const token = localStorage.getItem("token");
+    
     if (!noteTitle.trim() || !noteContent.trim()) return;
   
-    if (noteId) {
-      // **UPDATE Note**
-      try {
-        const existingNote = notes.find(note => note._id === noteId);
-        const updatedNote = {
-          title: noteTitle,
-          content: noteContent,
-          color: existingNote?.color || getRandomColor(), // Preserve color
-        };
+    const newNote = { title: noteTitle, content: noteContent, color: getRandomColor() };
   
-        const res = await fetch(`http://localhost:4000/api/notes/${noteId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedNote)
-        });
+    try {
+      const res = await fetch(`http://localhost:4000/api/notes${noteId ? `/${noteId}` : ''}`, {
+        method: noteId ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(newNote)
+      });
   
-        if (!res.ok) throw new Error("Failed to update note");
+      if (!res.ok) throw new Error("Failed to save note");
   
-        const savedNote = await res.json();
+      const savedNote = await res.json();
+      
+      setNotes(noteId ? notes.map(n => (n._id === noteId ? savedNote : n)) : [...notes, savedNote]);
   
-        // Update UI immediately after successful update
-        setNotes(notes.map(note => (note._id === noteId ? savedNote : note)));
-  
-        // Clear input fields
-        setNoteId(null);
-        setNoteTitle('');
-        setNoteContent('');
-      } catch (error) {
-        console.error("Error updating note:", error);
-      }
-    } else {
-      // **CREATE New Note**
-      const newNote = { title: noteTitle, content: noteContent, color: getRandomColor() };
-  
-      try {
-        const res = await fetch("http://localhost:4000/api/notes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newNote)
-        });
-  
-        if (!res.ok) throw new Error("Failed to create note");
-  
-        const savedNote = await res.json();
-  
-        // Update UI immediately
-        setNotes([...notes, savedNote]);
-  
-        // Clear input fields
-        setNoteTitle('');
-        setNoteContent('');
-      } catch (error) {
-        console.error(error);
-      }
+      setNoteId(null);
+      setNoteTitle('');
+      setNoteContent('');
+    } catch (error) {
+      console.error(error);
     }
   };
+  
   
 
   // Delete a note

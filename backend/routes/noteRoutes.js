@@ -3,35 +3,36 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const { getDB } = require('../config/db');
 const { ObjectId } = require('mongodb');
+const { protect } = require('../middleware/auth'); // Import auth middleware
+const Note = require('../models/Note'); 
 
 // POST: Create a new note
-router.post('/', async (req, res) => {
+router.post('/', protect, async (req, res) => {
   try {
-    const { title, content, color } = req.body;
-    if (!title || !content || !color) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+      const { title, content, color } = req.body;
+      const newNote = new Note({
+          title,
+          content,
+          color,
+          user: req.user.id // This should be set by `protect` middleware
+      });
 
-    const db = getDB();
-    const result = await db.collection('notes').insertOne({ title, content, color });
-
-    res.status(201).json({ 
-      _id: result.insertedId, // Return correct _id
-      title, 
-      content, 
-      color 
-    });
+      const savedNote = await newNote.save();
+      res.json(savedNote);
   } catch (error) {
-    console.error('❌ Error creating note:', error);
-    res.status(500).json({ message: 'Error creating note', error: error.message });
+      console.error(error);
+      res.status(500).json({ message: "Error creating note", error: error.message });
   }
 });
+
 
 // GET: Fetch all notes
 router.get('/', async (req, res) => {
   try {
+    const userId = req.user.id;
     const db = getDB();
-    const notes = await db.collection('notes').find().toArray();
+    const notes = await db.collection('notes').find({ userId }).toArray();
+    
     res.status(200).json(notes);
   } catch (error) {
     console.error('❌ Error fetching notes:', error);
@@ -43,17 +44,20 @@ router.get('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id;
+
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
 
     const db = getDB();
-    const result = await db.collection('notes').deleteOne({ _id: new ObjectId(id) });
+    const note = await db.collection('notes').findOne({ _id: new ObjectId(id), userId });
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Note not found' });
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found or unauthorized' });
     }
 
+    await db.collection('notes').deleteOne({ _id: new ObjectId(id) });
     res.status(200).json({ message: 'Note deleted successfully' });
   } catch (error) {
     console.error('❌ Error deleting note:', error);
@@ -61,28 +65,31 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
 // PUT: Update a note by ID
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, color } = req.body;
+    const userId = req.user.id;
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid note ID format' });
     }
 
     const db = getDB();
-    const noteId = new ObjectId(id);
-    const result = await db.collection('notes').updateOne(
-      { _id: noteId },
+    const note = await db.collection('notes').findOne({ _id: new ObjectId(id), userId });
+
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found or unauthorized' });
+    }
+
+    await db.collection('notes').updateOne(
+      { _id: new ObjectId(id) },
       { $set: { title, content, color } }
     );
 
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    const updatedNote = await db.collection('notes').findOne({ _id: noteId });
+    const updatedNote = await db.collection('notes').findOne({ _id: new ObjectId(id) });
     res.status(200).json(updatedNote);
   } catch (error) {
     console.error('❌ Error updating note:', error);
