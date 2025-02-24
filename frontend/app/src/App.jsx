@@ -15,7 +15,15 @@ import CodeEditor from "./components/Codeditor";
 
 function App() {
   const navigate = useNavigate(); 
+  const username = localStorage.getItem("username");
 
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/login");
+    window.location.reload();
+  };
   return (
     <>
       <nav className='navbar'>
@@ -24,9 +32,17 @@ function App() {
         <div className='home1'><Link to="/tutorials" className="color">Tutorials</Link></div>
         <div className='home1'><Link to="/about" className="color">About us</Link></div>
         <div className='home1'><Link to="/contact" className="color">Contact</Link></div>
-        <button className='login' onClick={() => navigate('/login')}>
-          SignUp/LogIn
-        </button>
+       
+        {username ? (
+          <>
+            <span className="username">Welcome, {username}</span>
+            <button className='logout' onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <button className='login' onClick={() => navigate('/login')}>
+            SignUp/LogIn
+          </button>
+        )}
       </nav>
 
       <Routes>
