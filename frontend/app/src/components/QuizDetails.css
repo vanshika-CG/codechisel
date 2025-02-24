@@ -1,123 +1,131 @@
-/* QuizDetails.css */
-
 /* General styling for the quiz container */
 .quiz-details-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Styling for the quiz title */
-  .quiz-details-container h1 {
-    font-size: 2.5rem;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Styling for the quiz description */
-  .quiz-details-container p {
-    font-size: 1.1rem;
-    color: #555;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  /* Styling for the questions section */
-  .quiz-details-container h2 {
-    font-size: 1.8rem;
-    color: #444;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
-  }
-  
-  /* Styling for each question */
-  .question-container {
-    margin-bottom: 25px;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .question-container p {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  /* Styling for multiple-choice options */
-  .question-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .question-container ul li {
-    margin-bottom: 10px;
-  }
-  
-  .question-container ul li label {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-  }
-  
-  .question-container ul li input[type="radio"] {
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  /* Styling for textarea (open-ended questions) */
-  .question-container textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  /* Styling for feedback after submission */
-  .feedback {
-    margin-top: 10px;
-    font-size: 1rem;
-  }
-  
-  .feedback span {
-    font-weight: bold;
-  }
-  
-  /* Styling for the submit button */
-  .submit-button {
-    display: block;
-    width: 100%;
-    max-width: 200px;
-    margin: 30px auto;
-    padding: 12px;
-    font-size: 1.1rem;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Styling for the score display */
-  .score-display {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #333;
-    margin-top: 20px;
-  }
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 2px solid rgba(128, 0, 128, 0.2);
+}
+
+/* Quiz Title */
+.quiz-details-container h1 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #6a0dad;
+  margin-bottom: 15px;
+}
+
+/* Quiz Description */
+.quiz-details-container p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Question Styling */
+.question-container {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(128, 0, 128, 0.1);
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.question-container p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Multiple-Choice Options */
+.question-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.question-container ul li {
+  margin-bottom: 12px;
+}
+
+.question-container ul li label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #444;
+  cursor: pointer;
+  padding: 8px 12px;
+  background: #fff;
+  border-radius: 6px;
+  transition: 0.3s;
+  border: 2px solid transparent;
+}
+
+.question-container ul li label:hover {
+  background: rgba(106, 13, 173, 0.1);
+  border: 2px solid #6a0dad;
+}
+
+.question-container ul li input[type="radio"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Open-ended Question (Textarea) */
+.question-container textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid rgba(128, 0, 128, 0.3);
+  border-radius: 6px;
+  background: #fafafa;
+  color: #333;
+  outline: none;
+  transition: 0.3s;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.question-container textarea:focus {
+  border-color: #6a0dad;
+  box-shadow: 0 0 6px rgba(128, 0, 128, 0.4);
+}
+
+/* Navigation Buttons */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.prev-button, .next-button, .submit-button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: none;
+  background: #6a0dad;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.prev-button:hover, .next-button:hover, .submit-button:hover {
+  background: #570b9b;
+  box-shadow: 0 0 8px rgba(128, 0, 128, 0.4);
+}
+
+/* Score Display */
+.score-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #6a0dad;
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(106, 13, 173, 0.1);
+  border-radius: 10px;
+}

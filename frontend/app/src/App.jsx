@@ -5,7 +5,7 @@ import Courses from "./components/Courses";
 import Tutorials from "./components/Tutorials";
 import About from "./components/About";
 import Contact from "./components/Contact";
-import Login from "./components/Login";
+import Login from "./components/login";
 import Notes from "./components/Notes";
 import QuizList from "./components/QuizList";
 import QuizDetails from "./components/QuizDetails";
@@ -14,8 +14,8 @@ import Getstarted from "./components/Getstarted";
 import CodeEditor from "./components/Codeditor";
 import logo from "./assets/logo.png";
 
-function App() {
-  const navigate = useNavigate();
+const App = () => {
+  const navigate = useNavigate(); // 🚨 Only works inside a component within <Router>
   const username = localStorage.getItem("username");
 
   // ✅ Add code state
@@ -74,10 +74,10 @@ function App() {
         <Route path="/quiz/:id" element={<QuizDetails />} />
         <Route path="/quiz/:id/submit" element={<QuizSubmit />} />
         <Route path="/getstarted" element={<Getstarted />} />
-        <Route path="/code-editor" element={<CodeEditor />} />
+        <Route path="/code-editor" element={<CodeEditor code={code} setCode={setCode} />} /> 
       </Routes>
     </>
   );
-}
+};
 
 export default App;

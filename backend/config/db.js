@@ -1,30 +1,22 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+const mongoose = require("mongoose");
+require("dotenv").config(); // Ensure .env is loaded
 
-// MongoDB connection details
-const uri = process.env.MONGODB_URI || "mongodb+srv://test:12345@cluster0.rqg22.mongodb.net/login?retryWrites=true&w=majority";
-const dbName = "login";
-
-let db;
-
-// Function to connect to MongoDB
 const connectDB = async () => {
-    try {
-        const client = await MongoClient.connect(uri, { useUnifiedTopology: true });
-        console.log("Connected to MongoDB");
-        db = client.db(dbName); // Assign the database instance
-    } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
-        process.exit(1); // Exit the process if the connection fails
+  try {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is not defined in .env file!");
     }
+    
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error(`❌ MongoDB Connection Error: ${error.message}`);
+    process.exit(1); // Stop server if DB connection fails
+  }
 };
 
-// Function to get the database instance
-const getDB = () => {
-    if (!db) {
-        throw new Error("Database not initialized. Call connectDB() first.");
-    }
-    return db;
-};
-
-module.exports = { connectDB, getDB };
+module.exports = { connectDB };
