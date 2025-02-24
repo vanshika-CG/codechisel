@@ -3,7 +3,12 @@
   padding: 0;
 }
 
-
+.logo{
+  width: 5vw;
+  border-radius: 10px;
+margin-top: 10px;
+  padding: 2px;
+}
 
 body {
   font-family: 'Poppins', sans-serif;
@@ -19,11 +24,39 @@ body {
   color: whitesmoke;
 }
 
+.username{
+  margin-top: 8px;
+  font-weight: bold;
+  
+}
+
+.logout {
+  background-color: #ff4d4d; /* Red color */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.logout:hover {
+  background-color: #cc0000; /* Darker red */
+  transform: scale(1.05);
+}
+
+.logout:active {
+  transform: scale(0.95);
+}
+
+
 .home {
   height: 30px;
   /* width: 70px; */
   color: rgb(255, 255, 255);
-  margin-left: 350px;
+  margin-left: 35px;
   margin-top: 18px;
   font-size: large;
 }
@@ -32,7 +65,7 @@ body {
   height: 30px;
   /* width: 70px; */
   color: rgb(255, 255, 255);
-  margin-left: 60px;
+  margin-left: 22px;
   margin-top: 18px;
   font-size: large;
 }

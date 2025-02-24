@@ -1,6 +1,6 @@
 import React from 'react';
 import './Contact.css';
-
+import  girl from "../assets/girl.png"
 const ThankYouScreen = ({ onClose }) => {
   return (
     <div className="thank-you-container">
@@ -16,14 +16,14 @@ const ThankYouScreen = ({ onClose }) => {
       <div className="content">
         <div className="avatar-container">
           <img 
-            src="/girl-avatar.png" 
+            src={girl}
             alt="Avatar showing a girl with phone"
             className="avatar-image"
           />
         </div>
         
-        <h1>Thank you for submitting,<br />we're excited to chat!</h1>
-        <p>We will reach out to you soon!</p>
+        <h1 className='sub'>Thank you for submitting,<br />we're excited to chat!</h1>
+        <p className='reach'>We will reach out to you soon!</p>
         
         <button onClick={onClose} className="close-button">
           close

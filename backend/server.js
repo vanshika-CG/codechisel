@@ -13,7 +13,7 @@ const registerRoute = require('./routes/register');
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:5176"], // Allow both ports
+    origin: ["http://localhost:3000", "http://localhost:5175"], // Allow both ports
     credentials: true
 }));
 
