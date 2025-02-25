@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import './Courses.css';
-import DevelopmentFieldSelector from '../components/Field'; // Import the DevelopmentFieldSelector
-import CoursePricingPage from '../components/Pricing'; // Import the Pricing component
+import React, { useState, useEffect } from "react";
+import "./Courses.css";
+import DevelopmentFieldSelector from "../components/Field";
+import CoursePricingPage from "../components/Pricing";
 
 // Course Card Component
 const CourseCard = ({ title, icon, description, onClick }) => (
@@ -14,9 +14,9 @@ const CourseCard = ({ title, icon, description, onClick }) => (
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
+  const [myCourses, setMyCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [showDevelopmentFields, setShowDevelopmentFields] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
@@ -24,48 +24,62 @@ const Courses = () => {
   const [enrolledTier, setEnrolledTier] = useState(null);
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-          const response = await fetch("http://localhost:4000/courses/all");
-          const data = await response.json();
-          console.log("Response data:", data); // Log the response data
-  
-          if (!response.ok) {
-              throw new Error(data.error || "Failed to fetch courses");
-          }
-  
-          if (Array.isArray(data)) {
-              setCourses(data);
-          } else {
-              throw new Error("Invalid data format: Expected an array");
-          }
-      } catch (error) {
-          console.error("Error fetching courses:", error);
-          setError("Failed to load courses.");
-      } finally {
-          setLoading(false);
-      }
-  };
-  
-  
     fetchCourses();
+    fetchMyCourses();
   }, []);
-  
+
+  // Fetch all available courses
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/courses/all");
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || "Failed to fetch courses");
+      if (Array.isArray(data)) setCourses(data);
+      else throw new Error("Invalid data format: Expected an array");
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      setError("Failed to load courses.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch enrolled courses for the logged-in user
+  const fetchMyCourses = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch("http://localhost:4000/api/enrollments/my-courses", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to fetch enrolled courses");
+
+      setMyCourses(data);
+    } catch (error) {
+      console.error("Error fetching enrolled courses:", error);
+      setMyCourses([]);
+    }
+  };
 
   if (loading) return <p>Loading courses...</p>;
   if (error) return <p>{error}</p>;
 
-  // Show the development fields selector
-  const handleChoosePathClick = () => {
-    setShowDevelopmentFields(true);
-  };
-
-  // Set the selected course to navigate to the pricing page
+  // Handle course selection
   const handleCourseClick = (course) => {
+    const isEnrolled = myCourses.some((enrollment) => enrollment.courseId._id === course._id);
+    
+    if (isEnrolled) {
+      alert(`You are already enrolled in ${course.title}. Redirecting to course content.`);
+      return; // Do not open pricing page for enrolled courses
+    }
+
     setSelectedCourse(course);
   };
 
-  // Go back to course selection
   const handleBackClick = () => {
     setSelectedCourse(null);
     setEnrollmentSuccess(false);
@@ -75,7 +89,6 @@ const Courses = () => {
   const handleEnroll = async (course, tier) => {
     try {
       const token = localStorage.getItem("token");
-
       if (!token) {
         alert("You must be logged in to enroll.");
         return;
@@ -85,23 +98,19 @@ const Courses = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          courseId: course._id,
-          tier: tier.name
-        })
+        body: JSON.stringify({ courseId: course._id, tier: tier.name }),
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to enroll");
-      }
+      if (!response.ok) throw new Error(data.message || "Failed to enroll");
 
       setEnrollmentSuccess(true);
       setEnrolledCourse(course);
       setEnrolledTier(tier);
+      fetchMyCourses(); // Refresh enrolled courses
+      fetchCourses(); // Refresh available courses
 
       alert("Enrollment successful!");
     } catch (error) {
@@ -110,72 +119,77 @@ const Courses = () => {
     }
   };
 
+  // Filter out enrolled courses from the explore section
+  const filteredCourses = courses.filter(
+    (course) => !myCourses.some((enrollment) => enrollment.courseId._id === course._id)
+  );
+
   return (
     <div className="wrapper">
       <div className="app">
         {enrollmentSuccess ? (
-          // Show enrollment success message
           <div className="enrollment-success">
             <div className="success-icon">✅</div>
             <h2>Enrollment Successful!</h2>
-            <p>You have successfully enrolled in the <strong>{enrolledCourse.title}</strong> course.</p>
-            <p>Plan: <strong>{enrolledTier.name}</strong> - ${enrolledTier.price}</p>
+            <p>
+              You have successfully enrolled in <strong>{enrolledCourse.title}</strong>.
+            </p>
+            <p>
+              Plan: <strong>{enrolledTier.name}</strong> - ${enrolledTier.price}
+            </p>
             <p>An email with access details has been sent to your inbox.</p>
             <button className="back-to-courses-btn" onClick={handleBackClick}>
               Back to Courses
             </button>
           </div>
         ) : selectedCourse ? (
-          // Show the pricing page for the selected course
-          <CoursePricingPage
-            course={selectedCourse}
-            onBack={handleBackClick}
-            onEnroll={handleEnroll}
-          />
+          <CoursePricingPage course={selectedCourse} onBack={handleBackClick} onEnroll={handleEnroll} />
         ) : showDevelopmentFields ? (
-          // Show the development fields selector
           <DevelopmentFieldSelector />
         ) : (
-          // Show the main courses page
           <main>
+            {/* My Courses Section */}
             <section className="my-courses">
               <h2>My Courses</h2>
-              <div className="course-grid">
-                {courses.map((course) => (
-                  <CourseCard 
-                    key={course._id} 
-                    title={course.title} 
-                    icon={course.icon} 
-                    description={course.description} 
-                    onClick={() => handleCourseClick(course)} 
-                  />
-                ))}
-              </div>
+              {myCourses.length === 0 ? (
+                <p>You have not enrolled in any courses yet.</p>
+              ) : (
+                <div className="course-grid">
+                  {myCourses.map((enrollment) => (
+                    <CourseCard
+                      key={enrollment._id}
+                      title={enrollment.courseTitle}
+                      icon={enrollment.courseId.icon}
+                      description={enrollment.courseId.description}
+                      onClick={() => handleCourseClick(enrollment.courseId)}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
 
+            {/* Explore Courses Section */}
             <section className="explore-courses">
               <h2>Explore Our Courses</h2>
               <div className="course-grid">
-                {courses.map((course) => ( // 🔹 FIXED: Changed `exploreCourses` to `courses`
-                  <CourseCard 
-                    key={course._id} 
-                    {...course} 
-                    onClick={() => handleCourseClick(course)}
-                  />
+                {filteredCourses.map((course) => (
+                  <CourseCard key={course._id} {...course} onClick={() => handleCourseClick(course)} />
                 ))}
               </div>
             </section>
 
+            {/* CTA Section */}
             <section className="cta">
               <h2>Take your coding skills to the next level!</h2>
               <p>Start learning today with our expert-led courses and comprehensive curriculum.</p>
-              <button className="choose-path-btn" onClick={handleChoosePathClick}>
+              <button className="choose-path-btn" onClick={() => setShowDevelopmentFields(true)}>
                 Choose your Path
               </button>
             </section>
           </main>
         )}
 
+        {/* Footer */}
         <footer>
           <div className="footer-section">
             <h4>Learning Paths</h4>

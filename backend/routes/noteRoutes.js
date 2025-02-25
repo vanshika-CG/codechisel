@@ -3,18 +3,18 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const { getDB } = require('../config/db');
 const { ObjectId } = require('mongodb');
-const { protect } = require('../middleware/auth'); // Import auth middleware
+const authMiddleware = require('../middleware/auth'); // ✅ Fixed import
 const Note = require('../models/Note'); 
 
 // POST: Create a new note
-router.post('/', protect, async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
       const { title, content, color } = req.body;
       const newNote = new Note({
           title,
           content,
           color,
-          user: req.user.id // This should be set by `protect` middleware
+          user: req.user.id 
       });
 
       const savedNote = await newNote.save();
@@ -25,9 +25,8 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-
-// GET: Fetch all notes
-router.get('/', async (req, res) => {
+// GET: Fetch all notes (🔹 Added `authMiddleware`)
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const db = getDB();
@@ -40,8 +39,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// DELETE: Delete a note by ID
-router.delete('/:id', async (req, res) => {
+// DELETE: Delete a note by ID (🔹 Added `authMiddleware`)
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
@@ -65,9 +64,8 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-
-// PUT: Update a note by ID
-router.put('/:id', async (req, res) => {
+// PUT: Update a note by ID (🔹 Added `authMiddleware`)
+router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, color } = req.body;

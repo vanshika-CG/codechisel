@@ -1,73 +1,182 @@
-import React, { useState } from 'react';
-import './Contact.css';
-import GetToKnowYouForm from './Contact2';
+import React, { useState, useEffect } from 'react';
+import './Courses.css';
+import DevelopmentFieldSelector from '../components/Field'; // Import the DevelopmentFieldSelector
+import CoursePricingPage from '../components/Pricing'; // Import the Pricing component
 
-const ContactPage = () => {
-  const [showGetToKnowYouForm, setShowGetToKnowYouForm] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+// Course Card Component
+const CourseCard = ({ title, icon, description, onClick }) => (
+  <div className="course-card" onClick={onClick}>
+    <div className="course-icon">{icon}</div>
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+);
 
-  const handleNext = () => {
-    if (!name.trim() || !email.trim()) {
-      setError('All fields are required');
-      return;
+const Courses = () => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [showDevelopmentFields, setShowDevelopmentFields] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
+  const [enrolledCourse, setEnrolledCourse] = useState(null);
+  const [enrolledTier, setEnrolledTier] = useState(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+          const response = await fetch("http://localhost:4000/courses/all");
+          const data = await response.json();
+          console.log("Response data:", data); // Log the response data
+  
+          if (!response.ok) {
+              throw new Error(data.error || "Failed to fetch courses");
+          }
+  
+          if (Array.isArray(data)) {
+              setCourses(data);
+          } else {
+              throw new Error("Invalid data format: Expected an array");
+          }
+      } catch (error) {
+          console.error("Error fetching courses:", error);
+          setError("Failed to load courses.");
+      } finally {
+          setLoading(false);
+      }
+  };
+  
+  
+    fetchCourses();
+  }, []);
+  
+
+  if (loading) return <p>Loading courses...</p>;
+  if (error) return <p>{error}</p>;
+
+  // Show the development fields selector
+  const handleChoosePathClick = () => {
+    setShowDevelopmentFields(true);
+  };
+
+  // Set the selected course to navigate to the pricing page
+  const handleCourseClick = (course) => {
+    setSelectedCourse(course);
+  };
+
+  // Go back to course selection
+  const handleBackClick = () => {
+    setSelectedCourse(null);
+    setEnrollmentSuccess(false);
+  };
+
+  // Handle Enrollment
+  const handleEnroll = async (course, tier) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You must be logged in to enroll.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:4000/api/enrollments/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          courseId: course._id,
+          tier: tier.name
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to enroll");
+      }
+
+      setEnrollmentSuccess(true);
+      setEnrolledCourse(course);
+      setEnrolledTier(tier);
+
+      alert("Enrollment successful!");
+    } catch (error) {
+      console.error("Error enrolling:", error);
+      alert(error.message);
     }
-    setShowGetToKnowYouForm(true);
   };
 
   return (
     <div className="wrapper">
-      <main className="main-content">
-        <section className="contact-section">
-          <h1>Let's get in touch</h1>
-          <p className="subtitle">We are here for you! How can we help?</p>
-
-          {!showGetToKnowYouForm ? (
-            <div className="contact-form-container">
-              <h2 className="ready">If you're ready to start, get in touch with us! 👇</h2>
-
-              <form className="contact-form">
-                <div className="form-group">
-                  <label>Hi!! 👋 What's your name?</label>
-                  <input 
-                    type="text" 
-                    placeholder="Name" 
-                    className="form-input" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)}
+      <div className="app">
+        {enrollmentSuccess ? (
+          // Show enrollment success message
+          <div className="enrollment-success">
+            <div className="success-icon">✅</div>
+            <h2>Enrollment Successful!</h2>
+            <p>You have successfully enrolled in the <strong>{enrolledCourse.title}</strong> course.</p>
+            <p>Plan: <strong>{enrolledTier.name}</strong> - ${enrolledTier.price}</p>
+            <p>An email with access details has been sent to your inbox.</p>
+            <button className="back-to-courses-btn" onClick={handleBackClick}>
+              Back to Courses
+            </button>
+          </div>
+        ) : selectedCourse ? (
+          // Show the pricing page for the selected course
+          <CoursePricingPage
+            course={selectedCourse}
+            onBack={handleBackClick}
+            onEnroll={handleEnroll}
+          />
+        ) : showDevelopmentFields ? (
+          // Show the development fields selector
+          <DevelopmentFieldSelector />
+        ) : (
+          // Show the main courses page
+          <main>
+            <section className="my-courses">
+              <h2>My Courses</h2>
+              <div className="course-grid">
+                {courses.map((course) => (
+                  <CourseCard 
+                    key={course._id} 
+                    title={course.title} 
+                    icon={course.icon} 
+                    description={course.description} 
+                    onClick={() => handleCourseClick(course)} 
                   />
-                </div>
+                ))}
+              </div>
+            </section>
 
-                <div className="form-group">
-                  <label>What's your E-mail?</label>
-                  <input 
-                    type="email" 
-                    placeholder="Email" 
-                    className="form-input"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+            <section className="explore-courses">
+              <h2>Explore Our Courses</h2>
+              <div className="course-grid">
+                {courses.map((course) => ( // 🔹 FIXED: Changed `exploreCourses` to `courses`
+                  <CourseCard 
+                    key={course._id} 
+                    {...course} 
+                    onClick={() => handleCourseClick(course)}
                   />
-                </div>
+                ))}
+              </div>
+            </section>
 
-                {error && <p className="error-message">{error}</p>}
+            <section className="cta">
+              <h2>Take your coding skills to the next level!</h2>
+              <p>Start learning today with our expert-led courses and comprehensive curriculum.</p>
+              <button className="choose-path-btn" onClick={handleChoosePathClick}>
+                Choose your Path
+              </button>
+            </section>
+          </main>
+        )}
 
-                <button type="button" className="next-button" onClick={handleNext}>
-                  Next
-                </button>
-              </form>
-            </div>
-          ) : (
-            <GetToKnowYouForm 
-              onPrevious={() => setShowGetToKnowYouForm(false)}
-              userName={name} // Pass name to Contact2.jsx
-              userEmail={email} // Pass email to Contact2.jsx
-            />
-          )}
-        </section>
-      </main>
-
-      <footer>
+        <footer>
           <div className="footer-section">
             <h4>Learning Paths</h4>
             <ul>
@@ -95,8 +204,9 @@ const ContactPage = () => {
             </div>
           </div>
         </footer>
+      </div>
     </div>
   );
 };
 
-export default ContactPage;
+export default Courses;
