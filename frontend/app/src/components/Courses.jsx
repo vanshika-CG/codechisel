@@ -1,44 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Courses.css';
 import DevelopmentFieldSelector from '../components/Field'; // Import the DevelopmentFieldSelector
 import CoursePricingPage from '../components/Pricing'; // Import the Pricing component
 
 // Course Card Component
 const CourseCard = ({ title, icon, description, onClick }) => (
-  <div className="course-card" onClick={onClick}>  {/* Added onClick */}
+  <div className="course-card" onClick={onClick}>
     <div className="course-icon">{icon}</div>
     <h3>{title}</h3>
     <p>{description}</p>
-    <div className="view-details">View Details</div>
   </div>
 );
 
 const Courses = () => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [showDevelopmentFields, setShowDevelopmentFields] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [enrollmentSuccess, setEnrollmentSuccess] = useState(false);
   const [enrolledCourse, setEnrolledCourse] = useState(null);
   const [enrolledTier, setEnrolledTier] = useState(null);
 
-  // My Courses
-  const myCourses = [
-    { title: "Python", icon: "🐍", description: "Learn the basics of Python programming and master essential concepts." },
-    { title: "HTML", icon: "📝", description: "Understand HTML fundamentals and build structured web pages." },
-    { title: "JavaScript", icon: "⚡", description: "Master JavaScript programming and modern web development." }
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+          const response = await fetch("http://localhost:4000/courses/all");
+          const data = await response.json();
+          console.log("Response data:", data); // Log the response data
+  
+          if (!response.ok) {
+              throw new Error(data.error || "Failed to fetch courses");
+          }
+  
+          if (Array.isArray(data)) {
+              setCourses(data);
+          } else {
+              throw new Error("Invalid data format: Expected an array");
+          }
+      } catch (error) {
+          console.error("Error fetching courses:", error);
+          setError("Failed to load courses.");
+      } finally {
+          setLoading(false);
+      }
+  };
+  
+  
+    fetchCourses();
+  }, []);
+  
 
-  // Explore Courses
-  const exploreCourses = [
-    { title: "C Programming", icon: "C", description: "Master C programming fundamentals and memory management." },
-    { title: "SQL", icon: "📊", description: "Learn database management and SQL query optimization." },
-    { title: "C++", icon: "C++", description: "Advanced programming with C++ and object-oriented concepts." },
-    { title: "Java Basic to Java", icon: "☕", description: "Comprehensive Java programming from basics to advanced." },
-    { title: "ASP.NET Core", icon: "🌐", description: "Build modern web applications with ASP.NET Core." },
-    { title: "C#", icon: "C#", description: "Learn C# programming and .NET framework development." },
-    { title: "Python", icon: "🐍", description: "Advanced Python concepts and application development." },
-    { title: "Angular", icon: "🅰️", description: "Build dynamic web applications with Angular framework." },
-    { title: "React", icon: "⚛️", description: "Create modern user interfaces with React components." }
-  ];
+  if (loading) return <p>Loading courses...</p>;
+  if (error) return <p>{error}</p>;
 
   // Show the development fields selector
   const handleChoosePathClick = () => {
@@ -59,40 +74,41 @@ const Courses = () => {
   // Handle Enrollment
   const handleEnroll = async (course, tier) => {
     try {
-        const token = localStorage.getItem("token");
-        console.log("Retrieved Token:", token); // Debugging step
+      const token = localStorage.getItem("token");
 
-        if (!token) {
-            alert("You must be logged in to enroll.");
-            return;
-        }
+      if (!token) {
+        alert("You must be logged in to enroll.");
+        return;
+      }
 
-        const response = await fetch("http://localhost:4000/api/enrollments/enroll", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ courseId: course._id, tier: tier.name })
-        });
+      const response = await fetch("http://localhost:4000/api/enrollments/enroll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          courseId: course._id,
+          tier: tier.name
+        })
+      });
 
-        const data = await response.json();
-        console.log("Response:", data);
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to enroll");
-        }
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to enroll");
+      }
 
-        alert("Enrollment successful!");
+      setEnrollmentSuccess(true);
+      setEnrolledCourse(course);
+      setEnrolledTier(tier);
+
+      alert("Enrollment successful!");
     } catch (error) {
-        console.error("Error enrolling:", error);
-        alert(error.message);
+      console.error("Error enrolling:", error);
+      alert(error.message);
     }
-};
-
-
-
-  
+  };
 
   return (
     <div className="wrapper">
@@ -111,7 +127,7 @@ const Courses = () => {
           </div>
         ) : selectedCourse ? (
           // Show the pricing page for the selected course
-          <CoursePricingPage 
+          <CoursePricingPage
             course={selectedCourse}
             onBack={handleBackClick}
             onEnroll={handleEnroll}
@@ -125,11 +141,13 @@ const Courses = () => {
             <section className="my-courses">
               <h2>My Courses</h2>
               <div className="course-grid">
-                {myCourses.map((course, index) => (
+                {courses.map((course) => (
                   <CourseCard 
-                    key={index} 
-                    {...course} 
-                    onClick={() => handleCourseClick(course)}
+                    key={course._id} 
+                    title={course.title} 
+                    icon={course.icon} 
+                    description={course.description} 
+                    onClick={() => handleCourseClick(course)} 
                   />
                 ))}
               </div>
@@ -138,9 +156,9 @@ const Courses = () => {
             <section className="explore-courses">
               <h2>Explore Our Courses</h2>
               <div className="course-grid">
-                {exploreCourses.map((course, index) => (
+                {courses.map((course) => ( // 🔹 FIXED: Changed `exploreCourses` to `courses`
                   <CourseCard 
-                    key={index} 
+                    key={course._id} 
                     {...course} 
                     onClick={() => handleCourseClick(course)}
                   />
@@ -192,5 +210,3 @@ const Courses = () => {
 };
 
 export default Courses;
-
-

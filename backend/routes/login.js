@@ -1,8 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/usermodel'); // Use the correct User Model
-const { getDB } = require("../config/db"); // ✅ Import this!
+const User = require('../models/usermodel'); // Use the correct Mongoose User Model
 require('dotenv').config();
 
 const router = express.Router();
@@ -12,16 +11,14 @@ const SECRET_KEY = process.env.JWT_SECRET || "your_secret_key";
 router.post("/", async (req, res) => {
     try {
         console.log("🔍 Login request received");
-        const db = getDB();
-        console.log("✅ DB connection retrieved successfully");
 
         const { usernameOrEmail, password } = req.body;
         if (!usernameOrEmail || !password) {
             return res.status(400).json({ error: "Email/Username and password are required" });
         }
 
-        // Try finding by email or username
-        const user = await db.collection("users").findOne({
+        // Find the user by email or username using Mongoose
+        const user = await User.findOne({
             $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
         });
 
@@ -29,12 +26,15 @@ router.post("/", async (req, res) => {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
+        // Compare hashed passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        // Generate JWT token
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: "1h" });
+
         res.json({ message: "Login successful", token, username: user.username });
     } catch (err) {
         console.error("❌ Error in login:", err.message);

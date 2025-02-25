@@ -1,7 +1,11 @@
-const { getDB } = require('../config/db');
+const mongoose = require('mongoose');
 
-// Access the courses collection
-const coursesCollection = () => getDB().collection('courses');
+const CourseSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    icon: { type: String, required: true },
+    description: { type: String, required: true }
+});
 
-module.exports = coursesCollection;
-    
+const Course = mongoose.model('Course', CourseSchema);
+
+module.exports = Course;
