@@ -33,22 +33,27 @@ router.post('/quizzes', async (req, res) => {
 
 
 // Get all Quizzes
+// Get all Quizzes
 router.get('/', async (req, res) => {
     try {
+        console.log("🔍 Fetching quizzes..."); // Debugging log
         const db = getDB();
-        const difficulty = req.query.difficulty; // Get difficulty from query params
+        const difficulty = req.query.difficulty;
 
         let query = {};
         if (difficulty) {
-            query.difficulty = difficulty; // Apply filter if difficulty is provided
+            query.difficulty = difficulty;
         }
 
         const quizzes = await db.collection("quizzes").find(query).toArray();
+        console.log("✅ Quizzes fetched:", quizzes.length); // Debugging log
         res.status(200).json(quizzes);
     } catch (err) {
+        console.error("❌ Error fetching quizzes:", err.message);
         res.status(500).json({ error: "Failed to fetch quizzes", details: err.message });
     }
 });
+
 
 
 // Get a Quiz by ID

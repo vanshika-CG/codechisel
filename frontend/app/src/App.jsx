@@ -12,6 +12,7 @@ import QuizDetails from "./components/QuizDetails";
 import QuizSubmit from "./components/QuizSubmit";
 import Getstarted from "./components/Getstarted";
 import CodeEditor from "./components/Codeditor";
+import UserProfile from "./components/Profile"; 
 import logo from "./assets/logo.png";
 
 const App = () => {
@@ -52,7 +53,7 @@ const App = () => {
 
         {username ? (
           <>
-            <span className="username">Welcome, {username}</span>
+<Link to="/profile" className="username-link">Welcome, {username}</Link>
             <button className="logout" onClick={handleLogout}>Logout</button>
           </>
         ) : (
@@ -75,6 +76,7 @@ const App = () => {
         <Route path="/quiz/:id/submit" element={<QuizSubmit />} />
         <Route path="/getstarted" element={<Getstarted />} />
         <Route path="/code-editor" element={<CodeEditor code={code} setCode={setCode} />} /> 
+        <Route path="/profile" element={<UserProfile />} /> 
       </Routes>
     </>
   );

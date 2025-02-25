@@ -30,7 +30,7 @@ const Login = () => {
 
     try {
       const endpoint = isRegister ? "register" : "login";
-      const response = await axios.post(`http://localhost:4000/login/login`, loginData);
+      const response = await axios.post(`http://localhost:4000/login`, loginData);
 
       if (!isRegister) {
         localStorage.setItem("token", response.data.token);

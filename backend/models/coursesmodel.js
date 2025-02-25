@@ -4,3 +4,4 @@ const { getDB } = require('../config/db');
 const coursesCollection = () => getDB().collection('courses');
 
 module.exports = coursesCollection;
+    

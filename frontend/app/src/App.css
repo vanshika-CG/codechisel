@@ -86,3 +86,17 @@ body {
   border-radius: 10px;
   color: #100425;
 }
+
+
+.username-link {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.username-link:hover {
+  text-decoration: underline;
+  color: #ffcc00;
+}

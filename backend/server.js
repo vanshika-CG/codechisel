@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:5175"], // Allow both ports
+    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both ports
     credentials: true
 }));
 
@@ -39,7 +39,8 @@ app.use('/api/code', require('./routes/codeExecution')); // Code execution route
 app.use('/api/user', userRoutes);
 app.use('/login', loginRoute);
 app.use('/register', registerRoute); 
-
+app.use('/api/profile', require('./routes/user'));
+app.use('/api/enrollments', require('./routes/enrollment'));
 
 // Connect to MongoDB and start the server
 connectDB()

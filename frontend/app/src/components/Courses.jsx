@@ -57,11 +57,42 @@ const Courses = () => {
   };
 
   // Handle Enrollment
-  const handleEnroll = (course, tier) => {
-    setEnrolledCourse(course);
-    setEnrolledTier(tier);
-    setEnrollmentSuccess(true);
-  };
+  const handleEnroll = async (course, tier) => {
+    try {
+        const token = localStorage.getItem("token");
+        console.log("Retrieved Token:", token); // Debugging step
+
+        if (!token) {
+            alert("You must be logged in to enroll.");
+            return;
+        }
+
+        const response = await fetch("http://localhost:4000/api/enrollments/enroll", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ courseId: course._id, tier: tier.name })
+        });
+
+        const data = await response.json();
+        console.log("Response:", data);
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to enroll");
+        }
+
+        alert("Enrollment successful!");
+    } catch (error) {
+        console.error("Error enrolling:", error);
+        alert(error.message);
+    }
+};
+
+
+
+  
 
   return (
     <div className="wrapper">
