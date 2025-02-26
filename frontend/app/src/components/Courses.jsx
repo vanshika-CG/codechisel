@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Trash } from "lucide-react";
 import "./Courses.css";
 import DevelopmentFieldSelector from "../components/Field";
 import CoursePricingPage from "../components/Pricing";
@@ -70,15 +71,18 @@ const Courses = () => {
 
   // Handle course selection
   const handleCourseClick = (course) => {
-    const isEnrolled = myCourses.some((enrollment) => enrollment.courseId._id === course._id);
-    
+    const isEnrolled = myCourses.some(
+      (enrollment) => enrollment.courseId && enrollment.courseId._id === course._id
+    );    
+  
     if (isEnrolled) {
       alert(`You are already enrolled in ${course.title}. Redirecting to course content.`);
-      return; // Do not open pricing page for enrolled courses
+      return;
     }
-
+  
     setSelectedCourse(course);
   };
+  
 
   const handleBackClick = () => {
     setSelectedCourse(null);
@@ -121,8 +125,51 @@ const Courses = () => {
 
   // Filter out enrolled courses from the explore section
   const filteredCourses = courses.filter(
-    (course) => !myCourses.some((enrollment) => enrollment.courseId._id === course._id)
+    (course) =>
+      !myCourses.some(
+        (enrollment) => enrollment.courseId && enrollment.courseId._id === course._id
+      )
   );
+  
+
+
+
+
+  const handleDeleteCourse = async (courseId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You must be logged in to delete a course.");
+        return;
+      }
+  
+      // Add 'removing' class for animation
+      const courseElement = document.getElementById(`course-${courseId}`);
+      if (courseElement) {
+        courseElement.classList.add("removing");
+      }
+  
+      setTimeout(async () => {
+        const response = await fetch(`http://localhost:4000/courses/delete/${courseId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Failed to delete course");
+  
+        alert("Course deleted successfully!");
+        fetchMyCourses();
+      }, 600); // Delay deletion to allow animation to play
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      alert(error.message);
+    }
+  };
+  
+  
 
   return (
     <div className="wrapper">
@@ -148,25 +195,32 @@ const Courses = () => {
           <DevelopmentFieldSelector />
         ) : (
           <main>
-            {/* My Courses Section */}
-            <section className="my-courses">
-              <h2>My Courses</h2>
-              {myCourses.length === 0 ? (
-                <p>You have not enrolled in any courses yet.</p>
-              ) : (
-                <div className="course-grid">
-                  {myCourses.map((enrollment) => (
-                    <CourseCard
-                      key={enrollment._id}
-                      title={enrollment.courseTitle}
-                      icon={enrollment.courseId.icon}
-                      description={enrollment.courseId.description}
-                      onClick={() => handleCourseClick(enrollment.courseId)}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
+         {/* My Courses Section */}
+<section className="my-courses">
+  <h2>My Courses</h2>
+  {myCourses.length === 0 ? (
+    <p>You have not enrolled in any courses yet.</p>
+  ) : (
+    <div className="course-grid">
+      {myCourses
+  .filter((enrollment) => enrollment.courseId)
+  .map((enrollment) => (
+    <div key={enrollment._id} id={`course-${enrollment.courseId._id}`} className="course-card">
+      <CourseCard
+        title={enrollment.courseTitle}
+        icon={enrollment.courseId.icon}
+        description={enrollment.courseId.description}
+        onClick={() => handleCourseClick(enrollment.courseId)}
+      />
+      <button className="delete-btn" onClick={() => handleDeleteCourse(enrollment.courseId._id)}>
+        <Trash size={20} />
+      </button>
+    </div>
+  ))}
+    </div>
+  )}
+</section>
+
 
             {/* Explore Courses Section */}
             <section className="explore-courses">

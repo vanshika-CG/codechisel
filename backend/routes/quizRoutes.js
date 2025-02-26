@@ -1,52 +1,36 @@
 const express = require('express');
-const { getDB } = require('../config/db');
-const { ObjectId } = require('mongodb');
+const Quiz = require('../models/quizmodelmodel');
 
 const router = express.Router();
 
 // Create a Quiz
 router.post('/quizzes', async (req, res) => {
     try {
-        const db = getDB();
         const { title, description, difficulty, courseId, questions } = req.body;
 
-        // ✅ Validate difficulty before inserting
-        const validDifficulties = ["Easy", "Medium", "Hard"];
-        if (!validDifficulties.includes(difficulty)) {
-            return res.status(400).json({ error: "Invalid difficulty level. Use Easy, Medium, or Hard." });
-        }
-
-        const result = await db.collection("quizzes").insertOne({
+        const newQuiz = new Quiz({
             title,
             description,
-            difficulty, // ✅ Make sure difficulty is stored
+            difficulty,
             courseId,
-            questions,
-            createdAt: new Date()
+            questions
         });
 
-        res.status(201).json({ message: "Quiz created", quizId: result.insertedId });
+        await newQuiz.save();
+        res.status(201).json({ message: "Quiz created", quizId: newQuiz._id });
     } catch (err) {
         res.status(500).json({ error: "Failed to create quiz", details: err.message });
     }
 });
 
-
-// Get all Quizzes
 // Get all Quizzes
 router.get('/', async (req, res) => {
     try {
-        console.log("🔍 Fetching quizzes..."); // Debugging log
-        const db = getDB();
+        console.log("🔍 Fetching quizzes...");
         const difficulty = req.query.difficulty;
-
-        let query = {};
-        if (difficulty) {
-            query.difficulty = difficulty;
-        }
-
-        const quizzes = await db.collection("quizzes").find(query).toArray();
-        console.log("✅ Quizzes fetched:", quizzes.length); // Debugging log
+        const query = difficulty ? { difficulty } : {};
+        const quizzes = await Quiz.find(query);
+        console.log("✅ Quizzes fetched:", quizzes.length);
         res.status(200).json(quizzes);
     } catch (err) {
         console.error("❌ Error fetching quizzes:", err.message);
@@ -54,13 +38,10 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-
 // Get a Quiz by ID
 router.get('/:id', async (req, res) => {
     try {
-        const db = getDB();
-        const quiz = await db.collection("quizzes").findOne({ _id: new ObjectId(req.params.id) });
+        const quiz = await Quiz.findById(req.params.id);
         if (!quiz) return res.status(404).json({ error: "Quiz not found" });
         res.status(200).json(quiz);
     } catch (err) {

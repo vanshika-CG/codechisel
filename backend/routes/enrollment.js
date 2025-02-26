@@ -44,8 +44,15 @@ router.get("/my-courses", authMiddleware, async (req, res) => {
     const userId = req.user._id;
 
     // Find user's enrollments
-    const enrollments = await Enrollment.find({ userId }).populate("courseId");
-    res.json(enrollments);
+    const enrolledCourses = await Enrollment.find({ userId })
+    .populate("courseId")
+    .lean(); // Convert to plain objects
+  
+  // Remove any enrollments with a missing courseId
+  const validEnrollments = enrolledCourses.filter((enrollment) => enrollment.courseId);
+  
+  res.json(validEnrollments);
+  
   } catch (error) {
     console.error("❌ Fetch my courses error:", error);
     res.status(500).json({ error: "Failed to fetch enrolled courses" });
