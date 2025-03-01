@@ -66,6 +66,35 @@ const ContactPage = () => {
           )}
         </section>
       </main>
+
+      <footer>
+          <div className="footer-section">
+            <h4>Learning Paths</h4>
+            <ul>
+              <li><a href="#">Web Development</a></li>
+              <li><a href="#">Mobile</a></li>
+              <li><a href="#">Security</a></li>
+              <li><a href="#">React</a></li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">Blog</a></li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Contact</h4>
+            <p>support@example.com</p>
+            <div className="social-links">
+              <a href="#">Twitter</a>
+              <a href="#">GitHub</a>
+              <a href="#">LinkedIn</a>
+            </div>
+          </div>
+        </footer>
     </div>
   );
 };

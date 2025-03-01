@@ -41,31 +41,34 @@ const QuizDetails = () => {
 
   const handleSubmit = async () => {
     console.log("Submitting answers:", answers);
-
+  
+    const validUserId = "65f1a2b3c4d5e6f7a8b9c0d1"; // Replace with a valid user ObjectId from your DB
+  
     try {
       const response = await fetch(`http://localhost:4000/submissions/${id}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "12345",
+          userId: validUserId, // ✅ Ensure it's a real ObjectId
           answers: Object.values(answers),
         }),
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to submit quiz: ${errorText}`);
       }
-
+  
       const result = await response.json();
       console.log("Response from server:", result);
-
+  
       setGradingDetails(result.gradingDetails);
       setScore(result.score);
     } catch (error) {
       console.error("Error submitting quiz:", error);
     }
   };
+  
 
   if (loading) return <p>Loading...</p>;
   if (!quiz) return <p>Quiz not found.</p>;

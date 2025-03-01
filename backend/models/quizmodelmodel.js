@@ -1,23 +1,21 @@
-const { ObjectId } = require('mongodb');
+const mongoose = require("mongoose");
 
-const quizModel = {
-    _id: ObjectId,
-    title: String,
-    description: String,
-    difficulty: String, // NEW FIELD: "Easy", "Medium", "Hard"
-    courseId: ObjectId,
+const quizSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String },
+    difficulty: { type: String, enum: ["Easy", "Medium", "Hard"], required: true },
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
     questions: [
         {
-            type: String,
-            question: String,
-            options: Array, 
-            correctAnswer: String,
-            correctCode: String, 
-            points: Number
+            type: { type: String, required: true },
+            question: { type: String, required: true },
+            options: { type: [String], required: true },
+            correctAnswer: { type: String, required: true },
+            correctCode: { type: String },
+            points: { type: Number, required: true }
         }
     ],
-    createdAt: Date
-};
+    createdAt: { type: Date, default: Date.now }
+});
 
-
-module.exports = quizModel;
+module.exports = mongoose.model("Quiz", quizSchema);

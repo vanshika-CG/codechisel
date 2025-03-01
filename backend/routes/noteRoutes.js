@@ -1,99 +1,78 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
-const { getDB } = require('../config/db');
-const { ObjectId } = require('mongodb');
-const { protect } = require('../middleware/auth'); // Import auth middleware
-const Note = require('../models/Note'); 
+const authMiddleware = require('../middleware/auth');
+const Note = require('../models/Note');
 
 // POST: Create a new note
-router.post('/', protect, async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
-      const { title, content, color } = req.body;
-      const newNote = new Note({
-          title,
-          content,
-          color,
-          user: req.user.id // This should be set by `protect` middleware
-      });
-
-      const savedNote = await newNote.save();
-      res.json(savedNote);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error creating note", error: error.message });
-  }
-});
-
-
-// GET: Fetch all notes
-router.get('/', async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const db = getDB();
-    const notes = await db.collection('notes').find({ userId }).toArray();
-    
-    res.status(200).json(notes);
-  } catch (error) {
-    console.error('❌ Error fetching notes:', error);
-    res.status(500).json({ message: 'Error fetching notes', error: error.message });
-  }
-});
-
-// DELETE: Delete a note by ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user.id;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid note ID format' });
+    const { title, content } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: "Title and content are required" });
     }
 
-    const db = getDB();
-    const note = await db.collection('notes').findOne({ _id: new ObjectId(id), userId });
+    const newNote = new Note({
+      userId: req.user._id,
+      title,
+      content,
+    });
 
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found or unauthorized' });
-    }
-
-    await db.collection('notes').deleteOne({ _id: new ObjectId(id) });
-    res.status(200).json({ message: 'Note deleted successfully' });
+    await newNote.save();
+    res.status(201).json(newNote);
   } catch (error) {
-    console.error('❌ Error deleting note:', error);
-    res.status(500).json({ message: 'Error deleting note', error: error.message });
+    console.error("Error saving note:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 
-// PUT: Update a note by ID
-router.put('/:id', async (req, res) => {
+// Get all notes for logged-in user
+router.get("/", authMiddleware, async (req, res) => {
+  try {
+    const notes = await Note.find({ user: req.user._id }); // Fetch only user's notes
+    res.json(notes);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+// PUT: Update a note (Ensure only the owner can update)
+router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, color } = req.body;
-    const userId = req.user.id;
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid note ID format' });
-    }
+    const updatedNote = await Note.findOneAndUpdate(
+      { _id: id, userId: req.user._id }, // Ensure user owns the note
+      { title, content, color },
+      { new: true }
+    );
 
-    const db = getDB();
-    const note = await db.collection('notes').findOne({ _id: new ObjectId(id), userId });
-
-    if (!note) {
+    if (!updatedNote) {
       return res.status(404).json({ message: 'Note not found or unauthorized' });
     }
 
-    await db.collection('notes').updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { title, content, color } }
-    );
-
-    const updatedNote = await db.collection('notes').findOne({ _id: new ObjectId(id) });
     res.status(200).json(updatedNote);
   } catch (error) {
     console.error('❌ Error updating note:', error);
     res.status(500).json({ message: 'Error updating note', error: error.message });
+  }
+});
+
+// DELETE: Remove a note (Ensure only the owner can delete)
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const deletedNote = await Note.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+
+    if (!deletedNote) {
+      return res.status(404).json({ message: 'Note not found or unauthorized' });
+    }
+
+    res.status(200).json({ message: 'Note deleted successfully' });
+  } catch (error) {
+    console.error('❌ Error deleting note:', error);
+    res.status(500).json({ message: 'Error deleting note', error: error.message });
   }
 });
 

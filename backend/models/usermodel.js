@@ -1,8 +1,11 @@
-const { getDB } = require('../config/db');
+const mongoose = require('mongoose');
 
-// Users Collection Accessor
-const usersCollection = () => getDB().collection('users');
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ["student", "admin"], default: "student" },
+    enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Enrollment' }] // Store enrollments
+});
 
-module.exports = {
-    usersCollection
-};
+module.exports = mongoose.model('User', UserSchema);

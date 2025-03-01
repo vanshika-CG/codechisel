@@ -1,19 +1,21 @@
 const express = require('express');
+const mongoose = require("mongoose");
 const session = require('express-session');
 const cors = require('cors');
 const { connectDB } = require('./config/db'); // MongoDB connection
 require('dotenv').config(); // Load .env variables
-const userRoutes = require('./routes/user');
-const app = express();
-const port = process.env.PORT || 4000;
 
+const userRoutes = require('./routes/user');
 const loginRoute = require('./routes/login');
 const registerRoute = require('./routes/register');  
+
+const app = express();
+const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:5175"], // Allow both ports
+    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both ports
     credentials: true
 }));
 
@@ -37,18 +39,31 @@ app.use('/api/code', require('./routes/codeExecution')); // Code execution route
 app.use('/api/user', userRoutes);
 app.use('/login', loginRoute);
 app.use('/register', registerRoute); 
-
+app.use('/api/profile', require('./routes/user'));
+app.use('/api/enrollments', require('./routes/enrollment'));
 
 // Connect to MongoDB and start the server
-connectDB().then(() => {
+connectDB()
+    .then(() => {
+        // Log all registered routes
+        console.log("\n✅ Registered Routes:");
+        app._router.stack.forEach((middleware) => {
+            if (middleware.route) {
+                console.log(`  ➜  ${Object.keys(middleware.route.methods)[0].toUpperCase()} ${middleware.route.path}`);
+            } else if (middleware.name === 'router') {
+                middleware.handle.stack.forEach((subMiddleware) => {
+                    if (subMiddleware.route) {
+                        console.log(`  ➜  ${Object.keys(subMiddleware.route.methods)[0].toUpperCase()} ${subMiddleware.route.path}`);
+                    }
+                });
+            }
+        });
 
-    app._router.stack.forEach((r) => {
-        if (r.route && r.route.path) {
-            console.log(`Registered Route: ${r.route.path}`);
-        }
+        app.listen(port, () => {
+            console.log(`\n🚀 Server running at: http://localhost:${port}\n`);
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Failed to connect to MongoDB:", err.message);
+        process.exit(1); // Exit the process on DB connection failure
     });
-    
-    app.listen(port, () => {
-        console.log(`Server running at http://localhost:${port}`);
-    });
-});
