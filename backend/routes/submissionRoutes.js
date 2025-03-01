@@ -1,61 +1,80 @@
 const express = require("express");
-const { getDB } = require("../config/db");
-const { ObjectId } = require("mongodb");
+const mongoose = require("mongoose");
+const Quiz = require("../models/quizmodelmodel");
+const Submission = require("../models/Submission");
 
 const router = express.Router();
 
-// ✅ Fix the endpoint to match frontend request
+// ✅ Quiz Submission Route
 router.post("/:quizId/submit", async (req, res) => {
   try {
-    const db = getDB();
     const { quizId } = req.params;
-    const { userId, answers } = req.body;
+    let { userId, answers } = req.body;
 
-    console.log("Received submission for quiz:", quizId);
-    console.log("Answers received:", answers);
+    console.log("📥 Received submission for quiz:", quizId);
 
-    // ✅ Convert `quizId` to `ObjectId`
-    const quiz = await db.collection("quizzes").findOne({ _id: new ObjectId(quizId) });
+    // ✅ Validate `quizId`
+    if (!mongoose.Types.ObjectId.isValid(quizId)) {
+      return res.status(400).json({ error: "Invalid quiz ID format" });
+    }
 
+    // ✅ Validate `userId` (convert to ObjectId if possible)
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      userId = new mongoose.Types.ObjectId(userId);
+    } else {
+      return res.status(400).json({ error: "Invalid user ID format" });
+    }
+
+    const quiz = await Quiz.findById(quizId);
     if (!quiz) {
-      console.error("Quiz not found in database");
+      console.error("❌ Quiz not found");
       return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    // ✅ Validate `answers` array length
+    if (!Array.isArray(answers) || answers.length !== quiz.questions.length) {
+      return res.status(400).json({ error: "Invalid or incomplete answers submitted" });
     }
 
     let score = 0;
     const gradingDetails = [];
 
     quiz.questions.forEach((question, index) => {
-      const isCorrect = question.correctAnswer === answers[index];
+      const selectedAnswer = answers[index] || null;
+      const isCorrect = question.correctAnswer === selectedAnswer;
+
       gradingDetails.push({
         question: question.question,
-        selectedAnswer: answers[index],
+        selectedAnswer,
         correctAnswer: question.correctAnswer,
         isCorrect,
       });
+
       if (isCorrect) score += question.points;
     });
 
-    // ✅ Save submission to database
-    const result = await db.collection("submissions").insertOne({
-      userId,
-      quizId,
+    // ✅ Save submission using Mongoose
+    const submission = new Submission({
+      userId, // Now always an ObjectId
+      quizId: new mongoose.Types.ObjectId(quizId),
       answers,
       score,
       gradingDetails,
       submittedAt: new Date(),
     });
 
-    console.log("Submission successful:", result.insertedId);
+    await submission.save();
+
+    console.log("✅ Submission successful:", submission._id);
 
     res.status(201).json({
       message: "Submission successful",
-      submissionId: result.insertedId,
+      submissionId: submission._id,
       score,
       gradingDetails,
     });
   } catch (err) {
-    console.error("Submission error:", err.message);
+    console.error("❌ Submission error:", err.message);
     res.status(500).json({ error: "Failed to submit quiz", details: err.message });
   }
 });

@@ -3,76 +3,112 @@ import './Notes.css';
 
 const NotesApp = () => {
   const [notes, setNotes] = useState([]);
-  const [noteId, setNoteId] = useState(null); // Track the note being edited
+  const [noteId, setNoteId] = useState(null);
   const [noteTitle, setNoteTitle] = useState('');
   const [noteContent, setNoteContent] = useState('');
 
-  // Fetch notes from backend (Runs on first load and whenever state updates)
+  // Fetch notes when the component mounts
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  // Fetch notes from backend
   const fetchNotes = async () => {
     try {
-        const response = await fetch('http://localhost:4000/api/notes');
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found, please login!");
+        return;
+      }
 
-        const data = await response.json();
+      const response = await fetch("http://localhost:4000/api/notes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (!Array.isArray(data)) throw new Error("Invalid data format received");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-        setNotes(data);
+      const data = await response.json();
+      console.log("📌 Notes fetched:", data);
+      setNotes(data); // ✅ Store notes in state
     } catch (error) {
-        console.error("Error fetching notes:", error);
-        setNotes([]); // Set to an empty array to prevent .map() errors
+      console.error("❌ Error fetching notes:", error);
     }
-};
-
-  
-  useEffect(() => {
-    fetchNotes(); // Load notes when the component mounts
-  }, []);
+  };
 
   // Create or Update Note
   const handleSaveNote = async () => {
-    const token = localStorage.getItem("token");
-    
-    if (!noteTitle.trim() || !noteContent.trim()) return;
-  
-    const newNote = { title: noteTitle, content: noteContent, color: getRandomColor() };
-  
+    if (!noteTitle.trim() || !noteContent.trim()) {
+      alert("Title and content cannot be empty.");
+      return;
+    }
+
     try {
-      const res = await fetch(`http://localhost:4000/api/notes${noteId ? `/${noteId}` : ''}`, {
-        method: noteId ? "PUT" : "POST",
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const url = noteId
+        ? `http://localhost:4000/api/notes/${noteId}` // Update existing note
+        : "http://localhost:4000/api/notes"; // Create new note
+
+      const method = noteId ? "PUT" : "POST"; // Use PUT for updates
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newNote)
+        body: JSON.stringify({ title: noteTitle, content: noteContent }),
       });
-  
-      if (!res.ok) throw new Error("Failed to save note");
-  
-      const savedNote = await res.json();
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save note");
+      }
+
+      console.log("✅ Note saved successfully:", data);
       
-      setNotes(noteId ? notes.map(n => (n._id === noteId ? savedNote : n)) : [...notes, savedNote]);
-  
+      if (noteId) {
+        // If updating a note, replace it in the list
+        setNotes(prevNotes => prevNotes.map(note => (note._id === noteId ? data : note)));
+      } else {
+        // If adding a new note, append it to the list
+        setNotes(prevNotes => [...prevNotes, data]);
+      }
+
+      // Reset form
       setNoteId(null);
-      setNoteTitle('');
-      setNoteContent('');
+      setNoteTitle("");
+      setNoteContent("");
     } catch (error) {
-      console.error(error);
+      console.error("❌ Error saving note:", error);
+      alert("Error saving note: " + error.message);
     }
   };
-  
-  
 
   // Delete a note
   const handleDeleteNote = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) return console.error("No token found, please login!");
+
     try {
-      const res = await fetch(`http://localhost:4000/api/notes/${id}`, { method: "DELETE" });
+      const res = await fetch(`http://localhost:4000/api/notes/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
       if (!res.ok) throw new Error("Failed to delete note");
 
-      // Update UI immediately
-      setNotes(notes.filter(note => note._id !== id));
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== id));
     } catch (error) {
-      console.error(error);
+      console.error("❌ Error deleting note:", error);
     }
   };
 
@@ -83,66 +119,56 @@ const NotesApp = () => {
     setNoteContent(note.content);
   };
 
-  // Generate random background color for notes
-  const getRandomColor = () => {
-    const colors = ['#ffcce6', '#b3ffcc', '#cce6ff', '#ffffcc'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
-
   return (
     <div className="wrapper">
-    <div className="notes-container">
-      <div className="notes-section">
-        <h1>My Notes</h1>
+      <div className="notes-container">
+        <div className="notes-section">
+          <h1>My Notes</h1>
 
-        <div className="notes-grid">
-          {notes.map(note => (
-            <div 
-              key={note._id} 
-              className="note-card"
-              style={{ backgroundColor: note.color }}
-            >
-              <div className="note-header">
-                <h3 className='tittle'>{note.title}</h3>
-                <button className="edit-button" onClick={() => handleEditNote(note)}>✎</button>
-                <button className="delete-button" onClick={() => handleDeleteNote(note._id)}>🗑</button>
+          <div className="notes-grid">
+            {notes.map(note => (
+              <div key={note._id} className="note-card">
+                <div className="note-header">
+                  <h3 className='title'>{note.title}</h3>
+                  <button className="edit-button" onClick={() => handleEditNote(note)}>✎</button>
+                  <button className="delete-button" onClick={() => handleDeleteNote(note._id)}>🗑</button>
+                </div>
+                <p>{note.content}</p>
               </div>
-              <p>{note.content}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="create-note-section">
-          <h2>{noteId ? "Edit Note" : "Create New Note"}</h2>
-          <input
-            type="text"
-            placeholder="Note Title"
-            value={noteTitle}
-            onChange={(e) => setNoteTitle(e.target.value)}
-          />
-          <textarea
-            placeholder="Write your note content here..."
-            value={noteContent}
-            onChange={(e) => setNoteContent(e.target.value)}
-          />
-          <div className="note-actions">
-            <button className="add-button" onClick={handleSaveNote}>
-              {noteId ? "Update Note" : "Add Note"}
-            </button>
-            <button 
-              className="delete-button"
-              onClick={() => {
-                setNoteId(null);
-                setNoteTitle('');
-                setNoteContent('');
-              }}
-            >
-              Clear
-            </button>
+          <div className="create-note-section">
+            <h2>{noteId ? "Edit Note" : "Create New Note"}</h2>
+            <input
+              type="text"
+              placeholder="Note Title"
+              value={noteTitle}
+              onChange={(e) => setNoteTitle(e.target.value)}
+            />
+            <textarea
+              placeholder="Write your note content here..."
+              value={noteContent}
+              onChange={(e) => setNoteContent(e.target.value)}
+            />
+            <div className="note-actions">
+              <button className="add-button" onClick={handleSaveNote}>
+                {noteId ? "Update Note" : "Add Note"}
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => {
+                  setNoteId(null);
+                  setNoteTitle('');
+                  setNoteContent('');
+                }}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };

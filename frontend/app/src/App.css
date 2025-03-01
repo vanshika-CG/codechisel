@@ -3,100 +3,10 @@
   padding: 0;
 }
 
-.logo{
-  width: 5vw;
-  border-radius: 10px;
-margin-top: 10px;
-  padding: 2px;
-}
-
 body {
   font-family: 'Poppins', sans-serif;
   background: rgb(16,4,37);
   background: linear-gradient(142deg, rgba(16,4,37,1) 0%, rgba(66,46,111,1) 100%);
 }
 
-.navbar {
-  background-color: #471383;
-  height: 60px;
-  width: 78.9em;
-  display: flex;
-  color: whitesmoke;
-}
 
-.username{
-  margin-top: 8px;
-  font-weight: bold;
-  
-}
-
-.logout {
-  background-color: #ff4d4d; /* Red color */
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-.logout:hover {
-  background-color: #cc0000; /* Darker red */
-  transform: scale(1.05);
-}
-
-.logout:active {
-  transform: scale(0.95);
-}
-
-
-.home {
-  height: 30px;
-  /* width: 70px; */
-  color: rgb(255, 255, 255);
-  margin-left: 35px;
-  margin-top: 18px;
-  font-size: large;
-}
-
-.home1 {
-  height: 30px;
-  /* width: 70px; */
-  color: rgb(255, 255, 255);
-  margin-left: 22px;
-  margin-top: 18px;
-  font-size: large;
-}
-
-.color {
-  color: white;
-  text-decoration: none;
-}
-
-.login{
-  background-color: #EAE34A;
-  height: 40px;
-  width: 120px;
-  margin-left: 100px;
-  margin-top: 10px;
-  border: none;
-  font-weight:600;
-  border-radius: 10px;
-  color: #100425;
-}
-
-
-.username-link {
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  margin-right: 15px;
-  cursor: pointer;
-}
-
-.username-link:hover {
-  text-decoration: underline;
-  color: #ffcc00;
-}

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './About.css';
+import { useNavigate } from 'react-router-dom';
 import img1 from "../assets/amazon.png";
 import img2 from "../assets/google.png";
 import img3 from "../assets/microsoft.png";
@@ -15,6 +16,7 @@ import img12 from "../assets/ibm.png";
 import { useState } from 'react';
 
 const AboutPage = () => {
+  const navigate = useNavigate();
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [animated, setAnimated] = useState(false);
 
@@ -108,7 +110,7 @@ const AboutPage = () => {
             Our mission is to make high-quality coding education accessible, engaging, and directly applicable to industry needs.
           </p>
           <div className="cta-buttons">
-            <button className="cta-primary">Explore Courses</button>
+          <button className="cta-primary" onClick={() => navigate('/courses')}>Explore Courses</button>
             <button className="cta-secondary">View Success Stories</button>
           </div>
         </div>
