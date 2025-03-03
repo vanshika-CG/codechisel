@@ -6,7 +6,7 @@ import Courses from "./components/Courses";
 import Tutorials from "./components/Tutorials";
 import About from "./components/About";
 import Contact from "./components/Contact";
-import Login from "./components/Login";
+import Login from "./components/login";
 import Notes from "./components/Notes";
 import QuizList from "./components/QuizList";
 import QuizDetails from "./components/QuizDetails";
