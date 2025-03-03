@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both ports
+    origin: ["http://localhost:4000", "http://localhost:5173"], // Allow both ports
     credentials: true
 }));
 
