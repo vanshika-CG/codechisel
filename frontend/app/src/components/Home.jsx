@@ -1,7 +1,7 @@
 import "./Home.css";
 import verifiedIcon from "../assets/verified.png";
 import master from "../assets/masterpanel.png";
-import video from "../assets/vedio.png";
+import video from "../assets/Vedio.png";
 import rect from "../assets/Rectangle.png";
 import stars from "../assets/stars.png";
 import code from "../assets/coding.png";
