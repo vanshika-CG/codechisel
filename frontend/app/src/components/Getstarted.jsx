@@ -63,10 +63,11 @@ const LearningPlatform = () => {
           <p className="js">JavaScript expert with 10+ years of experience in web development</p>
         </div>
        <div className="tuto">
-
+<h2 className="related">Releated Tutorials</h2>
        </div>
 
        <div className="user1">
+      <h2 className="pro">Your Progress</h2>
 
        </div>
       </div>

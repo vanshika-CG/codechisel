@@ -11,7 +11,7 @@ const QuizDetails = () => {
   const [gradingDetails, setGradingDetails] = useState(null);
   const [score, setScore] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(120);
   const [quizEnded, setQuizEnded] = useState(false);
 
   useEffect(() => {
