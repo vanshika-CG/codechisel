@@ -62,7 +62,6 @@ app.use("/api/code", require("./routes/codeExecution"));
 app.use("/api/user", userRoutes);
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
-app.use("/api/profile", require("./routes/user"));
 app.use("/api/enrollments", require("./routes/enrollment"));
 
 // Connect to MongoDB and start the server
@@ -81,6 +80,8 @@ connectDB()
         });
       }
     });
+    
+    
 
     app.listen(port, () => {
       console.log(`\n🚀 Server running at: http://localhost:${port}\n`);
