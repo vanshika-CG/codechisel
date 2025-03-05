@@ -14,6 +14,7 @@ import QuizSubmit from "./components/QuizSubmit";
 import Getstarted from "./components/Getstarted";
 import CodeEditor from "./components/Codeditor";
 import UserProfile from "./components/Profile";
+import Chatbot from "./components/Chatbot";
 
 const App = () => {
   const [code, setCode] = useState("// Write your code here...");
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/getstarted" element={<Getstarted />} />
         <Route path="/code-editor" element={<CodeEditor code={code} setCode={setCode} />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/chatbot" element={<Chatbot />} />
       </Routes>
     </>
   );
