@@ -1,4 +1,8 @@
 import "./Home.css";
+import { useState, useEffect } from "react";
+import Draggable from "react-draggable";
+import { useNavigate } from "react-router-dom";
+import Chatbot from "../components/Chatbot"; // Import your chatbot component
 import verifiedIcon from "../assets/verified.png";
 import master from "../assets/masterpanel.png";
 import video from "../assets/Vedio.png";
@@ -8,11 +12,34 @@ import code from "../assets/coding.png";
 import icon from "../assets/js.png";
 import icon2 from "../assets/python.png";
 import icon3 from "../assets/react.png";
-import { useNavigate } from "react-router-dom";
+import chatbotLogo from "../assets/chatbot.webp";
+
 
 
 const Home = () => {
   const navigate = useNavigate();
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [showChatbot, setShowChatbot] = useState(false);
+
+
+
+   // Load position from localStorage
+   useEffect(() => {
+    const savedPosition = localStorage.getItem("chatbotPosition");
+    if (savedPosition) {
+      setPosition(JSON.parse(savedPosition));
+    }
+  }, []);
+
+  // Save position when dragged
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+    localStorage.setItem("chatbotPosition", JSON.stringify({ x: data.x, y: data.y }));
+  };
+
+
+
+
   return (
     <div className="wrapper">
       <div className="main">
@@ -122,6 +149,17 @@ const Home = () => {
   <div className="recent"></div>
   <div className="recent"></div>
 </div>
+
+
+
+{/* Draggable Chatbot Logo */}
+
+      {/* Draggable Chatbot Logo */}
+      <Draggable position={position} onStop={handleDrag}>
+        <div className="chatbot-icon" onClick={() => navigate("/chatbot")}>
+          <img src={chatbotLogo} alt="Chatbot" />
+        </div>
+      </Draggable>
     </div>
   );
 };
