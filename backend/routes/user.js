@@ -45,47 +45,53 @@ router.put("/update", authenticateToken, async (req, res) => {
 // **UPLOAD PROFILE PHOTO**
 router.post("/upload-photo", authenticateToken, upload.single("photo"), async (req, res) => {
     try {
+        if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ error: "User not found" });
 
         user.profileImage = req.file.path;
         user.publicId = req.file.filename;
-
         await user.save();
 
-        res.json({ 
-            imageUrl: user.profileImage, 
-            publicId: user.publicId, 
-            message: "Profile photo uploaded successfully!" 
-        });
-
+        res.json({ imageUrl: user.profileImage, publicId: user.publicId, message: "Profile photo uploaded successfully!" });
     } catch (error) {
         console.error("Upload error:", error);
         res.status(500).json({ error: "Failed to upload image" });
     }
 });
 
+
 // **DELETE PROFILE PHOTO**
 router.delete("/delete-photo", authenticateToken, async (req, res) => {
     try {
+        console.log("Received request body:", req.body); // Debugging
+
         const { publicId } = req.body;
-        if (!publicId) return res.status(400).json({ error: "No publicId provided" });
+        const userId = req.user.id; // Get user ID from token
+
+        if (!publicId || !userId) {
+            return res.status(400).json({ error: "Public ID and user ID are required" });
+        }
+
+        console.log("Deleting from Cloudinary:", publicId); // Debugging
 
         await cloudinary.uploader.destroy(publicId);
 
-        const user = await User.findById(req.user.id);
-        if (user) {
-            user.profileImage = "";
-            user.publicId = "";
-            await user.save();
-        }
+        // Update user in the database
+        const user = await User.findByIdAndUpdate(userId, {
+            $unset: { profileImage: "", publicId: "" },
+        }, { new: true }); // Return updated user
 
-        return res.json({ message: "Profile photo deleted successfully!" });
+        console.log("Updated User:", user); // Debugging
+
+        res.json({ message: "Profile photo deleted successfully", user });
     } catch (error) {
-        console.error("Delete error:", error);
-        return res.status(500).json({ error: "Failed to delete image" });
+        console.error("Delete Error:", error);
+        res.status(500).json({ error: "Server error: " + error.message });
     }
 });
+
 
 // **CHANGE PASSWORD ROUTE (✅ FIXED)**
 router.put("/change-password", authenticateToken, async (req, res) => {

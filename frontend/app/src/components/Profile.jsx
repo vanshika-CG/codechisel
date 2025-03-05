@@ -6,7 +6,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [editingUsername, setEditingUsername] = useState(false);
+  const [editingUsername, setEditingUsername] = useState(false);  
   const [editingEmail, setEditingEmail] = useState(false);
 
   // State for password change
@@ -22,36 +22,116 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("No token found. Please log in.");
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setError("No token found. Please log in.");
+            setLoading(false);
+            return;
+        }
+
+        const response = await fetch("http://localhost:4000/api/user/profile", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch profile");
+
+        const data = await response.json();
+        console.log("Fetched user data:", data); // Debugging
+
+        setUser({
+            username: data.username,
+            email: data.email,
+            profileImage: data.profileImage || "",  // Ensure empty string if null
+            publicId: data.publicId || "",  // Ensure empty string if null
+        });
+
+    } catch (err) {
+        setError(err.message);
+    } finally {
         setLoading(false);
-        return;
-      }
+    }
+};
 
-      const response = await fetch("http://localhost:4000/api/user/profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+
+
+const handleImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("photo", file);
+
+  try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:4000/api/user/upload-photo", {
+          method: "POST",
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+          body: formData,
       });
-
-      if (!response.ok) throw new Error("Failed to fetch profile");
 
       const data = await response.json();
-      setUser({
-        username: data.username,
-        email: data.email,
-        profileImage: data.profileImage || "",
-        publicId: data.publicId || "",
+      if (response.ok) {
+          fetchProfile(); // ✅ Refetch user data after uploading
+          setSuccess("Profile image updated successfully!");
+      } else {
+          setError(data.error || "Error uploading image");
+      }
+  } catch (err) {
+      setError("Error uploading image. Please try again.");
+  }
+};
+
+
+
+
+const handleDeleteImage = async () => {
+  try {
+      const token = localStorage.getItem("token");
+
+      if (!user.publicId) {
+          console.error("Public ID is missing");
+          setError("Public ID is missing. Cannot delete image.");
+          return;
+      }
+
+      console.log("Sending delete request for:", user.publicId);
+
+      const response = await fetch("http://localhost:4000/api/user/delete-photo", {
+          method: "DELETE",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ publicId: user.publicId }), // User ID now comes from token
       });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      const data = await response.json();
+
+      if (response.ok) {
+          console.log("Updated user after deletion:", data.user);
+
+          // ✅ Refetch updated profile from the backend to get fresh data
+          fetchProfile(); 
+
+          setSuccess("Profile image deleted successfully!");
+      } else {
+          console.error("Delete Error:", data);
+          setError(data.error || "Error deleting image");
+      }
+  } catch (err) {
+      console.error("Delete Request Failed:", err);
+      setError("Error deleting image. Please try again.");
+  }
+};
+
+
+
 
   const handleUpdateProfile = async () => {
     try {
@@ -120,6 +200,27 @@ const Profile = () => {
       {success && <div className="success-message">{success}</div>}
       {error && <div className="error-message">{error}</div>}
       
+
+
+      <div className="profile-image-container">
+        <img
+  src={user.profileImage || "https://dummyimage.com/150x150/cccccc/ffffff&text=Profile"} 
+  alt="Profile"
+          className="profile-image"
+          onClick={() => fileInputRef.current.click()}
+        />
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleImageUpload}
+        />
+       {user.profileImage && (
+          <i className="fa-solid fa-trash delete-icon" onClick={handleDeleteImage}></i>
+        )}
+      </div>
+
+    
 
       <form className="profile-form" onSubmit={(e) => { e.preventDefault(); handleUpdateProfile(); }}>
         <div className="form-field">
