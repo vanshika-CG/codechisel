@@ -63,6 +63,8 @@ app.use("/api/user", userRoutes);
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
 app.use("/api/enrollments", require("./routes/enrollment"));
+app.use("/api", require("./routes/chatbot"));
+
 
 // Connect to MongoDB and start the server
 connectDB()
