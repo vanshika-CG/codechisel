@@ -7,27 +7,36 @@ const QuizList = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState(""); // New state for difficulty filter
+  const [loading, setLoading] = useState(true); // Loader state
+  const [error, setError] = useState(null); // Error state
+
 
   useEffect(() => {
     fetchQuizzes();
   }, [selectedDifficulty]); // Fetch quizzes when difficulty changes
-
-  const fetchQuizzes = () => {
+  const fetchQuizzes = async () => {
+    setLoading(true);
+    setError(null); // Reset error before fetching
     let url = "http://localhost:4000/quizzes";
+
     if (selectedDifficulty) {
       url += `?difficulty=${selectedDifficulty}`;
     }
 
-    axios
-      .get(url)
-      .then((response) => setQuizzes(response.data))
-      .catch((error) => console.error("Error fetching quizzes:", error));
+    try {
+      const response = await axios.get(url);
+      setQuizzes(response.data);
+    } catch (err) {
+      setError("Failed to fetch quizzes. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Filter quizzes based on search input
   const filteredQuizzes = quizzes.filter((quiz) =>
     quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   return (
     <div className="wrapper">
@@ -56,20 +65,34 @@ const QuizList = () => {
           ))}
         </div>
 
+               {/* Loader */}
+        {loading && (
+          <div className="loader-container">
+            <div className="loader">
+              <div className="spinner"></div>
+              <span>Loading quizzes...</span>
+            </div>
+          </div>
+        )}
+        {/* Error Message */}
+        {error && <p className="error-message">{error}</p>}
+
         {/* Quiz List */}
-        {filteredQuizzes.length > 0 ? (
+        {!loading && !error && filteredQuizzes.length > 0 ? (
           filteredQuizzes.map((quiz) => (
             <div key={quiz._id} className="quiz-card">
-              <h2>{quiz.title}</h2>
-              <p>{quiz.description}</p>
-              <p className="difficulty">Difficulty: {quiz.difficulty}</p>
-              <Link to={`/quiz/${quiz._id}`} className="take-quiz-button">
-                Take Quiz
-              </Link>
-            </div>
+            <p className={`difficulty ${quiz.difficulty.toLowerCase()}`}>
+              {quiz.difficulty}
+            </p>
+            <h2>{quiz.title}</h2>
+            <p>{quiz.description}</p>
+            <Link to={`/quiz/${quiz._id}`} className="take-quiz-button">
+              Take Quiz
+            </Link>
+          </div>          
           ))
         ) : (
-          <p className="no-results">No quizzes found.</p>
+          !loading && !error && <p className="no-results">No quizzes found.</p>
         )}
       </div>
     </div>

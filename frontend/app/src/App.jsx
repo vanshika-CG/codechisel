@@ -1,4 +1,15 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import DevelopmentFieldSelector from "./components/Field";
+import FrontendDevelopment from "./development/Frontend";
+import BackendDevelopment from "./development/Backend";
+import MobileDevelopment from "./development/Mobile";
+import GameDevelopment from "./development/Game";
+import MachineLearning from "./development/Machine";
+import ArtificialIntelligence from "./development/Ai";
+import Cloudcomputing from "./development/Cloud";
+import Cybersecurity from "./development/Cybersecurity";
+import Software from "./development/Software";
+
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -37,6 +48,18 @@ const App = () => {
         <Route path="/code-editor" element={<CodeEditor code={code} setCode={setCode} />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/development" element={<DevelopmentFieldSelector />} />
+        <Route path="/frontend-development" element={<FrontendDevelopment />} />
+        <Route path="/backend-development" element={<BackendDevelopment />} />
+        <Route path="/mobile-development" element={<MobileDevelopment />} />
+        <Route path="/game-development" element={<GameDevelopment />} />
+        <Route path="/data-science" element={<MachineLearning />} />
+        <Route path="/ai" element={<ArtificialIntelligence />} />
+        <Route path="/cloud-computing" element={<Cloudcomputing />} />
+        <Route path="/cybersecurity" element={<Cybersecurity />} />
+        <Route path="/cybersecurity" element={<Cybersecurity />} />
+        <Route path="/software-development" element={<Software />} />
+
       </Routes>
     </>
   );

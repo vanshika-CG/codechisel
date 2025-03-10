@@ -154,7 +154,7 @@ const QuizDetails = () => {
 
       <div className="question-container">
         <p>{currentQuestion.question}</p>
-        {currentQuestion.type === "multiple-choice" ? (
+{currentQuestion.questionType === "multiple-choice" ? (
           <ul>
             {currentQuestion.options.map((option, i) => (
               <li key={i}>

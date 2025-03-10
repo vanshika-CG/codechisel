@@ -21,31 +21,32 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    const loginData = isRegister
-    ? { ...formData, role: "student" } // ✅ Ensure role is sent
-    : { usernameOrEmail: formData.email, password: formData.password };
   
-    console.log("Sending Data:", loginData);
-
+    const endpoint = isRegister ? "register" : "login"; // ✅ Correctly set the endpoint
+    const apiUrl = `http://localhost:4000/${endpoint}`; // ✅ Use correct API endpoint
+  
+    const userData = isRegister
+      ? { ...formData, role: "student" } // ✅ Ensure role is sent during registration
+      : { usernameOrEmail: formData.email, password: formData.password };
+  
     try {
-      const endpoint = isRegister ? "register" : "login";
-      const response = await axios.post(`http://localhost:4000/login`, loginData);
-
-      if (!isRegister) {
+      const response = await axios.post(apiUrl, userData);
+  
+      if (isRegister) {
+        alert("Registration successful! Please log in.");
+        setIsRegister(false);
+        setFormData({ username: "", email: "", password: "" }); // ✅ Reset form
+      } else {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("username", response.data.username);
         navigate("/");
-      } else {
-        alert("Registration successful! Please log in.");
-        setIsRegister(false);
-        setFormData({ username: "", email: "", password: "" }); // ✅ Reset form fields
       }
     } catch (err) {
-      console.error("Error Response:", err.response);
+      console.error("Error:", err.response);
       setError(err.response?.data?.message || "Something went wrong");
     }
   };
+  
 
   return (
     <div className="auth-container">
