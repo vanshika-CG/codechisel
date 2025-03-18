@@ -23,8 +23,8 @@ const Home = () => {
 
 
 
-   // Load position from localStorage
-   useEffect(() => {
+  // Load position from localStorage
+  useEffect(() => {
     const savedPosition = localStorage.getItem("chatbotPosition");
     if (savedPosition) {
       setPosition(JSON.parse(savedPosition));
@@ -50,12 +50,12 @@ const Home = () => {
           </div>
           <h1 className="learn">Learn Code</h1>
           <h1 className="learn1">From Top Coder!</h1>
-          <p className="description">Get quality courses with the best prices. Now you 
-          can get the best course from us. We have top mentors 
-          around the globe. </p>
+          <p className="description">Get quality courses with the best prices. Now you
+            can get the best course from us. We have top mentors
+            around the globe. </p>
 
           <div className="get">
-          <button className="start" onClick={() => navigate("/getstarted")}>Get Started</button>            <div><button className="start1"><img src={video} alt="Verified Icon" className="video" /><p>How it works</p></button></div>
+            <button className="start" onClick={() => navigate("/getstarted")}>Get Started</button>            <div><button className="start1"><img src={video} alt="Verified Icon" className="video" /><p>How it works</p></button></div>
           </div>
         </div>
 
@@ -69,90 +69,91 @@ const Home = () => {
 
         <div className="white-div white-div-1">
           <p className="stud">OUR STUDENTS</p>
-        <p className="train"><b className="num1">14K+</b>trainned students</p>
+          <p className="train"><b className="num1">14K+</b>trainned students</p>
         </div>
 
         <div className="white-div white-div-2">
           <p className="stud">COURSES</p>
-          <div className="para">Get quality courses 
-          with the best mentor</div>
+          <div className="para">Get quality courses
+            with the best mentor</div>
           <h1 className="num">3000+</h1>
 
+        </div>
+
+        <div className="white-div white-div-3">
+          <p className="stud">MENTORS</p>
+          <div className="stars-container">
+            <img src={stars} alt="rating" className="star" />
+            <h1 className="mentor-count">320+</h1>
           </div>
-
-          <div className="white-div white-div-3">
-  <p className="stud">MENTORS</p>
-  <div className="stars-container">
-    <img src={stars} alt="rating" className="star" />
-    <h1 className="mentor-count">320+</h1>
-  </div>
-  <p className="rate"><b>60+ Rated mentor</b></p>
-</div>
+          <p className="rate"><b>60+ Rated mentor</b></p>
+        </div>
       </div>
-<div className="battle">
-<div className="quiz">
-<h1 className="adv">Being Your Coding Adventure</h1>
-<p className="level">level up your coding skills through interactive challenges, battles, and quests. 
-  Join thousands of developers in epic coding journey.</p>
+      <div className="battle">
+        <div className="quiz">
+          <h1 className="adv">Being Your Coding Adventure</h1>
+          <p className="level">level up your coding skills through interactive challenges, battles, and quests.
+            Join thousands of developers in epic coding journey.</p>
 
-  <div className="btn">
+          <div className="btn">
             {/* Navigate to quiz list when clicked */}
             <button className="quest" onClick={() => navigate("/quiz")}>
               Start Quiz
             </button>
             <button className="quest1">Join Battle</button>
+            <button onClick={() => navigate("/leaderboard")}>View Leaderboard</button>
           </div>
 
-</div>
+        </div>
 
-<div className="code">
-<img src={code} alt="coding" className="code" />
-</div>
-</div>
+        <div className="code">
+          <img src={code} alt="coding" className="code" />
+        </div>
+      </div>
 
-<h1 className="path">Choosing Your Learning Path</h1>
-<div className="flex">
-<div className="learning">
-  <img src={icon} alt="js" className="icon-cd" />
-  <p className="web">Web Development</p>
-  <p className="web-d">Master HTML, CSS, and JavaScript to build modern websites and applications.</p>
-  <div className="flex">
-    <p className="lessons">38 Lessons</p>
-    <p className="frnd"><b>Beginner friendly</b></p>
-  </div>
-  </div>
-<div className="learning">
-  <img src={icon2} alt="phython" className="icon-cd" />
-  <p className="web">Phython Programming</p>
-  <p className="web-d">Learn Python for data science, automation, and backend development.</p>
-  <div className="flex">
-    <p className="lessons">35 Lessons</p>
-    <p className="frnd1"><b>Intermediate</b></p>
-  </div>
-  </div>
-<div className="learning">
-  <img src={icon3} alt="react" className="icon-cd" />
-  <p className="web">React Development</p>
-  <p className="web-d">Build modern user interfaces with React and its ecosystem.</p>
-  <div className="flex">
-    <p className="lessons">42 Lessons</p>
-    <p className="frnd2"><b>Advanced</b></p>
-  </div>
-  </div>
-</div>
+      <h1 className="path">Choosing Your Learning Path</h1>
+      <div className="flex">
+        <div className="learning">
+          <img src={icon} alt="js" className="icon-cd" />
+          <p className="web">Web Development</p>
+          <p className="web-d">Master HTML, CSS, and JavaScript to build modern websites and applications.</p>
+          <div className="flex">
+            <p className="lessons">38 Lessons</p>
+            <p className="frnd"><b>Beginner friendly</b></p>
+          </div>
+        </div>
+        <div className="learning">
+          <img src={icon2} alt="phython" className="icon-cd" />
+          <p className="web">Phython Programming</p>
+          <p className="web-d">Learn Python for data science, automation, and backend development.</p>
+          <div className="flex">
+            <p className="lessons">35 Lessons</p>
+            <p className="frnd1"><b>Intermediate</b></p>
+          </div>
+        </div>
+        <div className="learning">
+          <img src={icon3} alt="react" className="icon-cd" />
+          <p className="web">React Development</p>
+          <p className="web-d">Build modern user interfaces with React and its ecosystem.</p>
+          <div className="flex">
+            <p className="lessons">42 Lessons</p>
+            <p className="frnd2"><b>Advanced</b></p>
+          </div>
+        </div>
+      </div>
 
-<h1 className="path">Your Learning Progress</h1>
-<div className="flex">
-  <div className="recent">
-    <p className="act">Recent Activity</p>
-  </div>
-  <div className="recent"></div>
-  <div className="recent"></div>
-</div>
+      <h1 className="path">Your Learning Progress</h1>
+      <div className="flex">
+        <div className="recent">
+          <p className="act">Recent Activity</p>
+        </div>
+        <div className="recent"></div>
+        <div className="recent"></div>
+      </div>
 
 
 
-{/* Draggable Chatbot Logo */}
+      {/* Draggable Chatbot Logo */}
 
       {/* Draggable Chatbot Logo */}
       <Draggable position={position} onStop={handleDrag}>
