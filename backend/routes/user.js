@@ -17,6 +17,9 @@ router.get("/profile", authenticateToken, async (req, res) => {
             email: user.email,
             profileImage: user.profileImage || "",
             publicId: user.publicId || "",
+            role: user.role,
+            enrolledCourses:user.enrolledCourses,
+            score:user.score    
         });
 
     } catch (err) {

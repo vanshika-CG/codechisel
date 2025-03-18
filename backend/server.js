@@ -8,6 +8,7 @@ require("dotenv").config(); // Load .env variables
 const userRoutes = require("./routes/user");
 const loginRoute = require("./routes/login");
 const registerRoute = require("./routes/register");
+const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -64,6 +65,7 @@ app.use("/login", loginRoute);
 app.use("/register", registerRoute);
 app.use("/api/enrollments", require("./routes/enrollment"));
 app.use("/api", require("./routes/chatbot"));
+app.use('/api/leaderboard', leaderboardRoutes);
 
 
 // Connect to MongoDB and start the server

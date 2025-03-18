@@ -1,0 +1,117 @@
+/* Page Wrapper */
+.leaderboard-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0e7ff, #f5d0fe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Leaderboard Container */
+  .leaderboard-container {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    position: relative;
+  }
+  
+  /* Title */
+  .leaderboard-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #4f46e5;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  
+  /* States */
+  .loading,
+  .no-data {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6b7280;
+    padding: 2rem;
+  }
+  
+  /* List */
+  .leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* List Item */
+  .leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #eef2ff;
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .leaderboard-item:hover {
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.2);
+  }
+  
+  /* Rank */
+  .rank {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #6b7280;
+    width: 50px;
+    text-align: center;
+  }
+  
+  /* User Info */
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .profile-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #4f46e5;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+  
+  .username-details h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: capitalize;
+    margin-bottom: 0.2rem;
+  }
+  
+  .username-details p {
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+  
+  .username-details p span {
+    color: #4f46e5;
+    font-weight: 500;
+  }
+  
+  /* Score */
+  .score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4f46e5;
+    min-width: 60px;
+    text-align: center;
+  }
+  

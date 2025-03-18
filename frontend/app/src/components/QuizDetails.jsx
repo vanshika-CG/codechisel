@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import "./QuizDetails.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const QuizDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState({});
@@ -13,7 +15,48 @@ const QuizDetails = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(120);
   const [quizEnded, setQuizEnded] = useState(false);
+  const [tabSwitchCount, setTabSwitchCount] = useState(0);
+  const [finalizedAnswers, setFinalizedAnswers] = useState({});
 
+  // Fetch userId from localStorage or authentication context
+  const userId = localStorage.getItem("userId"); // Assuming you store userId in localStorage after login
+
+  // ✅ Tab switch detection & warning logic
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && !quizEnded) {
+        setTabSwitchCount((prevCount) => {
+          const newCount = prevCount + 1;
+
+          if (newCount === 1 || newCount === 2) {
+            toast.warn(`⚠️ Warning: You've switched tabs or minimized the window (${newCount}/3)!`, {
+              position: 'top-center',
+              autoClose: 3000,
+            });
+          }
+
+          if (newCount === 3) {
+            toast.error("🚫 You've switched tabs too many times! Submitting quiz...", {
+              position: 'top-center',
+              autoClose: 3000,
+            });
+            handleSubmit();
+            setQuizEnded(true);
+          }
+
+          return newCount;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [quizEnded]);
+
+  // ✅ Fetch quiz data
   useEffect(() => {
     fetch(`http://localhost:4000/quizzes/${id}`)
       .then((res) => res.json())
@@ -27,6 +70,7 @@ const QuizDetails = () => {
       });
   }, [id]);
 
+  // ✅ Countdown timer
   useEffect(() => {
     if (timeLeft <= 0 && !quizEnded) {
       handleSubmit();
@@ -42,6 +86,7 @@ const QuizDetails = () => {
     }
   }, [timeLeft, quizEnded]);
 
+  // ✅ Calculate score after grading
   useEffect(() => {
     if (gradingDetails) {
       let calculatedScore = 0;
@@ -54,18 +99,28 @@ const QuizDetails = () => {
     }
   }, [gradingDetails]);
 
+  // ✅ Submit quiz
   const handleSubmit = async () => {
+    if (!userId) {
+      console.error("❌ User ID not found. Please log in.");
+      return;
+    }
+
     const finalAnswers = {};
     quiz?.questions.forEach((_, index) => {
       finalAnswers[index] = answers[index] || null;
     });
+
+    // ✅ Save the answers at submission time
+    setFinalizedAnswers(finalAnswers);
 
     try {
       const response = await fetch(`http://localhost:4000/submissions/${id}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "65f1a2b3c4d5e6f7a8b9c0d1",
+          userId, // Use the actual userId
+          username: "Krish25",  // ✅ Add your username here
           answers: Object.values(finalAnswers),
         }),
       });
@@ -81,6 +136,11 @@ const QuizDetails = () => {
         return;
       }
 
+      // ✅ Grading details and quiz ended
+      setGradingDetails(result.gradingDetails);
+      setQuizEnded(true);
+
+      // ✅ Calculate score
       let calculatedScore = 0;
       quiz.questions.forEach((q, index) => {
         if (result.gradingDetails?.[index]?.isCorrect) {
@@ -88,9 +148,7 @@ const QuizDetails = () => {
         }
       });
 
-      setGradingDetails(result.gradingDetails);
       setScore(calculatedScore);
-      setQuizEnded(true);
     } catch (error) {
       console.error("Error submitting quiz:", error);
       setScore(0);
@@ -98,13 +156,19 @@ const QuizDetails = () => {
     }
   };
 
+  // ✅ Loading or no quiz found states
   if (loading) return <p>Loading...</p>;
   if (!quiz) return <p>Quiz not found.</p>;
 
+  // ✅ Quiz review after submission
   if (quizEnded) {
     return (
       <div className="quiz-details-container">
-        <button className="back-button" onClick={() => navigate("/quiz")}>⬅ Back to Quiz List</button>
+        <ToastContainer />
+
+        <button className="back-button" onClick={() => navigate("/quiz")}>
+          ⬅ Back to Quiz List
+        </button>
 
         <h1>{quiz.title}</h1>
         <h2 className="score">Your Score: {score !== null ? score : "Calculating..."}</h2>
@@ -114,7 +178,9 @@ const QuizDetails = () => {
               <p><strong>{q.question}</strong></p>
               <p>
                 Your Answer: {answers[i] || "No Answer"}
-                {gradingDetails?.[i]?.isCorrect ? " ✅" : ` ❌ (Correct: ${gradingDetails?.[i]?.correctAnswer})`}
+                {gradingDetails?.[i]?.isCorrect
+                  ? " ✅"
+                  : ` ❌ (Correct: ${quiz.questions[i].correctAnswer})`}
               </p>
             </div>
           ))}
@@ -123,12 +189,16 @@ const QuizDetails = () => {
     );
   }
 
+  // ✅ Quiz in progress
   const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
     <div className="quiz-details-container">
-      {/* Back button before submission */}
-      <button className="back-button" onClick={() => navigate("/quiz")}>⬅ Back to Quiz List</button>
+      <ToastContainer />
+
+      <button className="back-button" onClick={() => navigate("/quiz")}>
+        ⬅ Back to Quiz List
+      </button>
 
       <div className="sidebar">
         <h3>Questions</h3>
@@ -154,7 +224,7 @@ const QuizDetails = () => {
 
       <div className="question-container">
         <p>{currentQuestion.question}</p>
-{currentQuestion.questionType === "multiple-choice" ? (
+        {currentQuestion.questionType === "multiple-choice" ? (
           <ul>
             {currentQuestion.options.map((option, i) => (
               <li key={i}>
@@ -187,12 +257,17 @@ const QuizDetails = () => {
             Previous
           </button>
         )}
+
         {currentQuestionIndex < quiz.questions.length - 1 && !quizEnded ? (
           <button onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}>
             Next
           </button>
         ) : (
-          !quizEnded && <button onClick={handleSubmit}>Submit</button>
+          !quizEnded && (
+            <button onClick={handleSubmit}>
+              Submit
+            </button>
+          )
         )}
       </div>
     </div>
