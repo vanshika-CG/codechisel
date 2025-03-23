@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000;
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:5173",
+  "http://localhost:5174",
   process.env.CLIENT_URL // Ensure this is set in .env (e.g., "https://codechisel-24.netlify.app")
 ];
 
