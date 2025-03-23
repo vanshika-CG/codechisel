@@ -26,6 +26,7 @@ import Getstarted from "./components/Getstarted";
 import CodeEditor from "./components/Codeditor";
 import UserProfile from "./components/Profile";
 import Chatbot from "./components/Chatbot";
+import Leaderboard from "./components/Leaderboard";
 
 const App = () => {
   const [code, setCode] = useState("// Write your code here...");
@@ -59,6 +60,7 @@ const App = () => {
         <Route path="/cybersecurity" element={<Cybersecurity />} />
         <Route path="/cybersecurity" element={<Cybersecurity />} />
         <Route path="/software-development" element={<Software />} />
+        <Route path="/leaderboard" element={<Leaderboard/>} />
 
       </Routes>
     </>

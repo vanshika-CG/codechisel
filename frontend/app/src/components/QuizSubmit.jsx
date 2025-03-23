@@ -7,13 +7,21 @@ const QuizSubmit = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
 
+  // Fetch userId from localStorage or authentication context
+  const userId = localStorage.getItem("userId"); // Assuming you store userId in localStorage after login
+
   const handleChange = (qIndex, value) => {
     setAnswers((prev) => ({ ...prev, [qIndex]: value }));
   };
 
   const handleSubmit = () => {
+    if (!userId) {
+      console.error("❌ User ID not found. Please log in.");
+      return;
+    }
+
     axios.post(`http://localhost:4000/quizzes/${id}/submit`, {
-      userId: "123", // Hardcoded for now
+      userId, // Use the actual userId
       answers: Object.values(answers),
     })
       .then((response) => setScore(response.data.score))

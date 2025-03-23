@@ -1,6 +1,7 @@
 const express = require('express');
 const Quiz = require('../models/quizmodelmodel');
-
+const User = require('../models/usermodel.js');
+const Leaderboard = require('../models/leaderboardmodel');
 const router = express.Router();
 
 // Create a Quiz
@@ -48,5 +49,56 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: "Failed to fetch quiz", details: err.message });
     }
 });
+
+router.post('/submit-quiz', async (req, res) => {
+    const { userId, scoreEarned } = req.body;
+
+    console.log("➡️  Incoming submit-quiz request");
+    console.log("🧑‍💻 userId:", userId);
+    console.log("🎯 scoreEarned:", scoreEarned);
+
+    try {
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            console.log("❌ User not found");
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        console.log("✅ User found:", user.username);
+
+        // Find or create leaderboard entry
+        let leaderboardEntry = await Leaderboard.findOne({ user: userId });
+
+        if (!leaderboardEntry) {
+            console.log("ℹ️  No leaderboard entry, creating new one...");
+            leaderboardEntry = new Leaderboard({
+                user: userId,
+                score: scoreEarned,
+                quizzesSolved: 1
+            });
+        } else {
+            console.log("ℹ️  Leaderboard entry found, updating...");
+            leaderboardEntry.score += scoreEarned;
+            leaderboardEntry.quizzesSolved += 1;
+        }
+
+        // Save the leaderboard entry
+        await leaderboardEntry.save();
+
+        res.status(200).json({
+            message: 'Score updated',
+            leaderboardEntry
+        });
+
+    } catch (error) {
+        console.error("🔥 Error in submit-quiz:", error);
+        res.status(500).json({
+            message: 'Error updating score and leaderboard',
+            error: error.message // This will show the actual error string
+        });
+    }
+});
+
 
 module.exports = router;

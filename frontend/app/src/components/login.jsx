@@ -11,7 +11,7 @@ const Login = () => {
     password: "",
     role: "student" // Default role
   });
-    const [error, setError] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,11 +22,11 @@ const Login = () => {
     e.preventDefault();
     setError("");
   
-    const endpoint = isRegister ? "register" : "login"; // ✅ Correctly set the endpoint
-    const apiUrl = `http://localhost:4000/${endpoint}`; // ✅ Use correct API endpoint
+    const endpoint = isRegister ? "register" : "login";
+    const apiUrl = `http://localhost:4000/${endpoint}`;
   
     const userData = isRegister
-      ? { ...formData, role: "student" } // ✅ Ensure role is sent during registration
+      ? { ...formData, role: "student" }
       : { usernameOrEmail: formData.email, password: formData.password };
   
     try {
@@ -35,10 +35,16 @@ const Login = () => {
       if (isRegister) {
         alert("Registration successful! Please log in.");
         setIsRegister(false);
-        setFormData({ username: "", email: "", password: "" }); // ✅ Reset form
+        setFormData({ username: "", email: "", password: "" });
       } else {
+        // Store token, username, and userId in localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("username", response.data.username);
+        localStorage.setItem("userId", response.data.userId); // Store userId
+  
+        // Log the userId to verify it's being stored
+        console.log("✅ User logged in. userId:", response.data.userId);
+  
         navigate("/");
       }
     } catch (err) {
