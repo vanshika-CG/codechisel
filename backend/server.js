@@ -15,6 +15,7 @@ require("dotenv").config(); // Load .env variables
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:4000",
   "http://localhost:5173",
   process.env.CLIENT_URL // Ensure this is set in .env (e.g., "https://codechisel-24.netlify.app")
 ];
