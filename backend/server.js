@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const cors = require("cors");
 const { connectDB } = require("./config/db"); // MongoDB connection
-require("dotenv").config(); // Load .env variables
 
 const userRoutes = require("./routes/user");
 const loginRoute = require("./routes/login");
@@ -12,11 +11,11 @@ const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
 const port = process.env.PORT || 4000;
-
+require("dotenv").config(); // Load .env variables
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:5174",
+  "http://localhost:5173",
   process.env.CLIENT_URL // Ensure this is set in .env (e.g., "https://codechisel-24.netlify.app")
 ];
 

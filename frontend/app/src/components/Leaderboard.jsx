@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import './Leaderboard.css'; // 👈 Import the external CSS file
+import './Leaderboard.css';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,7 +27,7 @@ const Leaderboard = () => {
     try {
       const res = await fetch('http://localhost:4000/api/leaderboard');
       const data = await res.json();
-      console.log('🚀 Leaderboard data:', data); // Debugging log
+      console.log('🚀 Leaderboard data:', data);
 
       if (Array.isArray(data)) {
         // Sort by user.score in descending order
@@ -57,7 +57,9 @@ const Leaderboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
-        <h2 className="leaderboard-title">🏆 Leaderboard</h2>
+        <div className="leaderboard-header">
+          <h2 className="leaderboard-title">🏆 Leaderboard</h2>
+        </div>
 
         {loading ? (
           <div className="loading">Loading leaderboard...</div>
@@ -72,50 +74,55 @@ const Leaderboard = () => {
           >
             {leaderboard.map((entry, index) => {
               if (!entry.user || !entry.user.username) {
-                console.warn('⚠️ Invalid user data:', entry); // Debugging log
+                console.warn('⚠️ Invalid user data:', entry);
                 return null;
               }
 
               const profileImage =
                 entry.user.profileImage ||
                 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+              
+              // Get the score from the user object
+              const score = entry.user.score || 0;
 
               return (
                 <motion.li
-                  key={entry._id}
+                  key={entry._id || index}
                   variants={itemVariants}
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: 'spring', stiffness: 200 }}
                   className="leaderboard-item"
                 >
-                  {/* Display rank based on index */}
-                  <div className="rank">#{index + 1}</div>
-
-                  <div className="user-info">
-                    <motion.img
-                      src={profileImage}
-                      alt={entry.user.username}
+                  <div className="leaderboard-item-content">
+                    <div className="rank">#{index + 1}</div>
+                    
+                    <div className="user-info">
+                      <motion.img
+                        src={profileImage}
+                        alt={entry.user.username}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="profile-img"
+                      />
+                      
+                      <div className="username-details">
+                        <h3>{entry.user.username}</h3>
+                        <p>Quizzes Solved: <span>{entry.quizzesSolved || 0}</span></p>
+                      </div>
+                    </div>
+                    
+                    <motion.div
+                      className="score-container"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.2 }}
-                      className="profile-img"
-                    />
-
-                    <div className="username-details">
-                      <h3>{entry.user.username}</h3>
-                      <p>Quizzes Solved: <span>{entry.quizzesSolved || 0}</span></p>
-                    </div>
+                      transition={{ delay: 0.4 }}
+                    >
+                      <div className="score">
+                        <span>{score}</span>
+                      </div>
+                    </motion.div>
                   </div>
-
-                  {/* Display user's score from the User model */}
-                  <motion.div
-                    className="score"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    Score: {entry.user.score || 0}
-                  </motion.div>
                 </motion.li>
               );
             })}
