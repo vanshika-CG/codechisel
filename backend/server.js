@@ -18,7 +18,7 @@ const allowedOrigins = [
   "http://localhost:4000",
   "http://localhost:5173",
   "https://codechisel.onrender.com",
-  "https://codin-learning.netlify.app/",
+  "https://codin-learning.netlify.app",
   process.env.CLIENT_URL // Ensure this is set in .env (e.g., "https://codechisel-24.netlify.app")
   
 ];

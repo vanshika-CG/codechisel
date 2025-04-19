@@ -11,7 +11,7 @@ export default function SignupPage() {
 
   const handleSignup = async () => {
     try {
-      const response = await fetch("http://localhost:4000/login/register", {
+      const response = await fetch("https://codechisel.onrender.com/login/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
