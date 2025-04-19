@@ -23,7 +23,7 @@ const Login = () => {
     setError("");
   
     const endpoint = isRegister ? "register" : "login";
-    const apiUrl = `http://localhost:4000/${endpoint}`;
+    const apiUrl = `https://codechisel.onrender.com/${endpoint}`;
   
     const userData = isRegister
       ? { ...formData, role: "student" }
