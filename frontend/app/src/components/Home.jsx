@@ -101,7 +101,7 @@ const Home = () => {
               Start Quiz
             </button>
             <button className="quest1">Join Battle</button>
-            <button onClick={() => navigate("/leaderboard")}>View Leaderboard</button>
+            <button  className="quest1" onClick={() => navigate("/leaderboard")}>View Leaderboard</button>
           </div>
 
         </div>
