@@ -25,7 +25,7 @@ const Leaderboard = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:4000/api/leaderboard');
+      const res = await fetch('https://codechisel.onrender.com/api/leaderboard');
       const data = await res.json();
       console.log('🚀 Leaderboard data:', data);
 

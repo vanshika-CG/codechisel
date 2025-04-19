@@ -16,7 +16,7 @@ const Chatbot = () => {
         setLoading(true);
 
         try {
-            const res = await axios.post("http://localhost:4000/api/chatbot", { message: input });
+            const res = await axios.post("https://codechisel.onrender.com/api/chatbot", { message: input });
             const botMessage = { role: "bot", content: res.data.response };
 
             setMessages((prev) => [...prev, botMessage]);

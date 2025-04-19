@@ -32,7 +32,7 @@ const Courses = () => {
   // Fetch all available courses
   const fetchCourses = async () => {
     try {
-      const response = await fetch("http://localhost:4000/courses/all");
+      const response = await fetch("https://codechisel.onrender.com/courses/all");
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Failed to fetch courses");
@@ -52,7 +52,7 @@ const Courses = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response = await fetch("http://localhost:4000/api/enrollments/my-courses", {
+      const response = await fetch("https://codechisel.onrender.com/api/enrollments/my-courses", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -98,7 +98,7 @@ const Courses = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:4000/api/enrollments/enroll", {
+      const response = await fetch("https://codechisel.onrender.com/api/enrollments/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +150,7 @@ const Courses = () => {
       }
   
       setTimeout(async () => {
-        const response = await fetch(`http://localhost:4000/courses/delete/${courseId}`, {
+        const response = await fetch(`https://codechisel.onrender.com/courses/delete/${courseId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

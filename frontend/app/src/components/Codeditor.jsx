@@ -3,7 +3,7 @@ import Editor from "@monaco-editor/react";
 import axios from "axios";
 import "./Codeditor.css"; 
 
-const Judge0_API = "http://localhost:4000/api/code/run"; 
+const Judge0_API = "https://codechisel.onrender.com/api/code/run"; 
 
 const CodeEditor = () => {
     const [code, setCode] = useState("// Write your code here");
@@ -38,7 +38,7 @@ const CodeEditor = () => {
       }
   
       try {
-          const response = await axios.post("http://localhost:4000/api/code/run", {
+          const response = await axios.post("https://codechisel.onrender.com/api/code/run", {
               code,
               language: languageKey, // ✅ Send correct language name
           });
